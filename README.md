@@ -66,7 +66,7 @@ Cogs HP가 0이 되면 언제든 End Scene / Defeat
 | 캐릭터 디자인 |
 |---|
 | Cogs |
-| <img width="1254" height="1254" alt="스팀펑크 연금술 발명가 콘셉트 시트" src="https://github.com/user-attachments/assets/c9f426d2-4411-4ea9-b44d-f53bb3c99a21" />
+| <img width="1254" height="1254" alt="image" src="https://github.com/user-attachments/assets/066f0ffa-52e9-4840-834c-9776412f9778" />|
 | Gears |
 |<img width="1122" height="1402" alt="ChatGPT 이미지 2026년 11월 6일 오후 01_37_18-1" src="https://github.com/user-attachments/assets/aeb5de89-c8d4-4cb9-a960-8690df323bb4" />|
 
