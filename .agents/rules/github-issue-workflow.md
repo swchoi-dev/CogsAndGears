@@ -7,6 +7,8 @@
 - 일반 대화·읽기 전용 분석은 Issue 불필요. 작업 요청은 Issue 초안을 준비하되 등록 승인이 없으면 로컬 결과를 제공한다. 정식 Markdown 작업지시서 원문 보관이 요청되면 `docs/work-orders/issue-{실제번호}-{작업명}.md`에 보관한다. 원격에 없는 문서 링크를 게시하지 않는다.
 
 ## 진행
+Issue 초안·계획 변경·승인된 등록은 [start-issue 실행 흐름](../skills/start-issue/SKILL.md)의 계획·승인 상태별 절차를 따른다. 아래 구현·완료 절차는 해당 작업에 필요한 단계만 적용하며, 단순 수정이나 승인된 등록을 위해 구현 조사를 반복하지 않는다.
+
 1. Issue·관련 설계·기술문서와 실제 파일을 읽기 전용으로 확인한다.
 2. [implementation-brief.md](../templates/implementation-brief.md)로 구현 가이드를 작성한다. 예상 파일은 예상으로 표기한다.
 3. 승인된 Issue 보완만 수행한다. 기존 본문 전체를 덮어쓰지 않는다.
