@@ -1209,7 +1209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow2D
   _target: {fileID: 786360902}
-  _cameraBounds: {fileID: 0}
+  _cameraBounds: {fileID: 527577510}
 --- !u!1 &2076321929
 GameObject:
   m_ObjectHideFlags: 0
