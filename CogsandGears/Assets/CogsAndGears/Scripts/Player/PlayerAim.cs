@@ -10,9 +10,13 @@ public class PlayerAim : MonoBehaviour
     [SerializeField] private Transform _visualRoot;
     [SerializeField] private float _facingThreshold = 0.1f;
     
+    private PlayerMovement _playerMovement;
+    
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public float FacingDirection { get; private set; } = 1f;
 
+    private void Awake() => CacheComponents();
+    
     private void Update()
     {
         UpdateAim();
@@ -35,6 +39,8 @@ public class PlayerAim : MonoBehaviour
 
     private void UpdateFacing()
     {
+        if (_playerMovement.IsDashing) return;
+        
         if (Mathf.Abs(AimDirection.x) < _facingThreshold)
             return;
 
@@ -45,5 +51,10 @@ public class PlayerAim : MonoBehaviour
             FacingDirection > 0f ? 90f : -90f,
             0f
         );
+    }
+
+    private void CacheComponents()
+    {
+        _playerMovement = GetComponent<PlayerMovement>();
     }
 }
