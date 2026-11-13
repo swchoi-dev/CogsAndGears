@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(100)]
 [RequireComponent(typeof(Camera))]
 public class CameraFollow2D : MonoBehaviour
 {
