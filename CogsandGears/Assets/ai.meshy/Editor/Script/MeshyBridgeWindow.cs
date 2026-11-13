@@ -596,7 +596,7 @@ public class MeshyBridgeWindow : EditorWindow
 	{
 		try
 		{
-			string importDir = "Assets/MeshyImports";
+			string importDir = "Assets/Imports";
 			if (!Directory.Exists(importDir))
 			{
 				Directory.CreateDirectory(importDir);
