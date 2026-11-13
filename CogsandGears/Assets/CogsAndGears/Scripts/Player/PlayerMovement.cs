@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,38 +8,45 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private InputActionReference _moveAction;
     [SerializeField] private InputActionReference _dashAction;
+    [SerializeField] private PlayerAnimation _playerAnimation;
+    [SerializeField] private Transform _visualRoot;
+    
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _dashForce = 100f;
     [SerializeField] private float _dashDuration = 1f;
     [SerializeField] private float _reChargeDuration = 5f;
     [SerializeField] private int _maxDashCount = 1;
     
+    private PlayerAim _playerAim;
     private Rigidbody2D _rigidbody;
     private Vector2 _moveInput;
     
-    private float _facingDirection;
     private float _dashDirection;
     private bool _isDashRequested;
     private bool _isDashing;
     private int _currentDashCount;
-
-    private bool CanDash => !_isDashing && _currentDashCount > 0; 
+    
+    private bool CanDash => !_isDashing && _currentDashCount > 0;
+    
+    public event Action DashStarted;
+    public bool IsDashing => _isDashing;
     
     private void Awake() => CacheComponents();
 
     private void Start() => InitMovement();
+
+    private void Update()
+    {
+        float signedMoveX = _moveInput.x * _playerAim.FacingDirection;
+        _playerAnimation.UpdateMovement(signedMoveX);
+    }
     
     private void FixedUpdate()
     {
         if (_isDashRequested)
         {
-            Debug.Log(
-                $"Dash BEFORE | Force: {_dashForce}, " +
-                $"Mass: {_rigidbody.mass}, " +
-                $"Velocity: {_rigidbody.linearVelocity}"
-            );
-            
-            _rigidbody.AddForce(Vector2.right * (_dashDirection * _dashForce), ForceMode2D.Impulse);
+            float dashAmount = _moveInput.x == 0 ? _dashForce + _moveSpeed : _dashForce;
+            _rigidbody.AddForce(Vector2.right * (_dashDirection * dashAmount), ForceMode2D.Impulse);
             _isDashRequested = false;
         }
         
@@ -71,32 +79,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (Mathf.Abs(_moveInput.x) > 0.01f)
         {
-            _facingDirection = Mathf.Sign(_moveInput.x);
+            _dashDirection = Mathf.Sign(_moveInput.x);
         }
     }
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        if (!CanDash) return;
-
-        Debug.Log($"Dash START: {Time.time:F2}, Count: {_currentDashCount}");
-
-        
-        _currentDashCount -= 1;
-        
-        _dashDirection = _facingDirection;
-        _isDashRequested = true;
-        _isDashing = true;
-        
-        StartCoroutine(DashCoroutine());
-        StartCoroutine(ReChargeCoroutine());
+        if (!TryStartDash()) return;
+        DashStarted?.Invoke();
     }
 
     private void RestoreDash()
     {
         _currentDashCount = Mathf.Clamp(_currentDashCount + 1, 0, _maxDashCount);
-        
-        Debug.Log($"Dash RESTORED: {Time.time:F2}, Count: {_currentDashCount}");
     }
     
     private IEnumerator DashCoroutine()
@@ -113,10 +108,30 @@ public class PlayerMovement : MonoBehaviour
         RestoreDash();
     }
 
+    private bool TryStartDash()
+    {
+        if (!CanDash) return false;
+        
+        _currentDashCount -= 1;
+        _isDashRequested = true;
+        _isDashing = true;
+        
+        _visualRoot.localRotation = Quaternion.Euler(
+            0f,
+            _dashDirection > 0f ? 90f : -90f,
+            0f
+        );
+        
+        StartCoroutine(DashCoroutine());
+        StartCoroutine(ReChargeCoroutine());
+
+        return true;
+    }
+    
+    
     private void InitMovement()
     {
-        _facingDirection = 1f;
-        _dashDirection = _facingDirection;
+        _dashDirection = 1f;
         _isDashRequested = false;
         _isDashing = false;
         _currentDashCount = _maxDashCount;
@@ -125,5 +140,6 @@ public class PlayerMovement : MonoBehaviour
     private void CacheComponents()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _playerAim = GetComponent<PlayerAim>();
     }
 }
