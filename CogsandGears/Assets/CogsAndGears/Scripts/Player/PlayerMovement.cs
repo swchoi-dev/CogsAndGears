@@ -3,13 +3,14 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private InputActionReference _moveAction;
     [SerializeField] private InputActionReference _dashAction;
     [SerializeField] private PlayerAnimation _playerAnimation;
-    [SerializeField] private Transform _visualRoot;
+    [SerializeField] private Transform _modelRoot;
     
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _dashForce = 100f;
@@ -119,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
         _isDashRequested = true;
         _isDashing = true;
         
-        _visualRoot.localRotation = Quaternion.Euler(
+        _modelRoot.localRotation = Quaternion.Euler(
             0f,
             _dashDirection > 0f ? 90f : -90f,
             0f

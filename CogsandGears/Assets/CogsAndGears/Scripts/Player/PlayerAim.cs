@@ -9,24 +9,25 @@ public class PlayerAim : MonoBehaviour
     private const float MIN_AIM_DISTANCE = 0.0001f;
     private const float MIN_FACING_THRESHOLD = 0.1f;
     private const float DEFAULT_HAND_ROTATION_ANGLE = 310f;
+    private const float DEFAULT_MODEL_ROTATION_ANGLE = 135f;
     
     [SerializeField] private Camera _camera;
     
-    [SerializeField] private Transform _visualRoot;
+    [SerializeField] private Transform _modelRoot;
     [SerializeField] private Transform _aimOrigin;
     
     [SerializeField] private Transform _upperBodyTarget;
-    [SerializeField] private Transform _rightArmTarget;
-    [SerializeField] private Transform _rightHandTarget;
+    [SerializeField] private Transform _armTarget;
+    [SerializeField] private Transform _handTarget;
     
     [SerializeField] private float _turnSpeed = 540f;
-    [SerializeField] private float _turnAngle = 50f;
+    [SerializeField] private float _bodyRotateRange = 50f;
     [SerializeField] private float _armReach = 0.6f;
-
+    
     [SerializeField] private TwoBoneIKConstraint _handIKConstraint;
     
     private PlayerMovement _playerMovement;
-    private Quaternion _initRightHandRotation;
+    private Quaternion _initHandRotation;
     
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public float FacingDirection { get; private set; } = 1f;
@@ -49,15 +50,18 @@ public class PlayerAim : MonoBehaviour
     
     private void Update()
     {
-        UpdateAim();
-        
         if (_playerMovement.IsDashing) return;
-        
+        UpdateAim();
         UpdateFacing();
-        UpdateUpperBodyAim();
-        UpdateRightArmAim();
+        UpdateAnimRig();
     }
 
+    private void UpdateAnimRig()
+    {
+        UpdateUpperBody();
+        UpdateRightArm();
+    }
+    
     private void UpdateAim()
     {
         Vector2 mouseScreen = Mouse.current.position.ReadValue();
@@ -81,25 +85,25 @@ public class PlayerAim : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.Euler(
             0f,
-            FacingDirection > 0f ? 90f : -90f,
+            FacingDirection > 0f ?  _tempAngle + 90f : _tempAngle + 180f,
             0f
         );
         
-        _visualRoot.rotation = Quaternion.RotateTowards(
-            _visualRoot.rotation,
+        _modelRoot.rotation = Quaternion.RotateTowards(
+            _modelRoot.rotation,
             targetRotation,
             _turnSpeed * Time.deltaTime
         );
     }
 
-    private void UpdateUpperBodyAim()
+    private void UpdateUpperBody()
     {
         float angle = Mathf.Atan2(
             AimDirection.y,
             Mathf.Abs(AimDirection.x)
         ) * Mathf.Rad2Deg;
 
-        angle = Mathf.Clamp(angle, _turnAngle * -1, _turnAngle);
+        angle = Mathf.Clamp(angle, _bodyRotateRange * -1, _bodyRotateRange);
         
         Quaternion targetRotation = Quaternion.Euler(-angle, 0f, 0f);
 
@@ -110,19 +114,19 @@ public class PlayerAim : MonoBehaviour
         );
     }
 
-    private void UpdateRightArmAim()
+    private void UpdateRightArm()
     {
         
-        Vector3 targetPosition = _rightArmTarget.position 
+        Vector3 targetPosition = _armTarget.position 
             + new Vector3(AimDirection.x, AimDirection.y, 0f) * _armReach;
         
-        _rightHandTarget.position = targetPosition;
+        _handTarget.position = targetPosition;
         
-        float angle = Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg;
+        float handRotateAngle = Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg;
         float facingAngle = FacingDirection > 0f ? 0f : -180f;
 
-        _rightHandTarget.rotation = _initRightHandRotation
-                                    * Quaternion.AngleAxis(angle, Vector3.forward)
+        _handTarget.rotation = _initHandRotation
+                                    * Quaternion.AngleAxis(handRotateAngle, Vector3.forward)
                                     * Quaternion.AngleAxis(DEFAULT_HAND_ROTATION_ANGLE, Vector3.up)
                                     * Quaternion.AngleAxis(facingAngle, Vector3.up);
     }
@@ -139,8 +143,8 @@ public class PlayerAim : MonoBehaviour
 
     private void Init()
     {
-        _visualRoot.localRotation = Quaternion.Euler(0f, 90f, 0f);
-        _initRightHandRotation = _rightHandTarget.localRotation;
+        _modelRoot.localRotation = Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE, 0f);
+        _initHandRotation = _handTarget.localRotation;
     }
     
     private void CacheComponents()
