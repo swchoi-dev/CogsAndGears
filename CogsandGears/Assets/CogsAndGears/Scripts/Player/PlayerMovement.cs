@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     private bool CanDash => !_isDashing && _currentDashCount > 0;
     
     public event Action DashStarted;
+    public event Action DashFinished;
+    
     public bool IsDashing => _isDashing;
     
     private void Awake() => CacheComponents();
@@ -99,6 +101,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(_dashDuration);
 
         _isDashing = false;
+        DashFinished?.Invoke();
     }
 
     private IEnumerator ReChargeCoroutine()
