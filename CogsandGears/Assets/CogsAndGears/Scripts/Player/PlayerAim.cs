@@ -85,7 +85,7 @@ public class PlayerAim : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.Euler(
             0f,
-            FacingDirection > 0f ?  _tempAngle + 90f : _tempAngle + 180f,
+            FacingDirection > 0f ?  DEFAULT_MODEL_ROTATION_ANGLE + 90f : DEFAULT_MODEL_ROTATION_ANGLE + 180f,
             0f
         );
         
