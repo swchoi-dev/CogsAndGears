@@ -1,14 +1,13 @@
 using UnityEngine;
 
 [DefaultExecutionOrder(100)]
-[RequireComponent(typeof(Camera))]
 public class CameraFollow2D : MonoBehaviour
 {
     [SerializeField] private Transform _target;
     [SerializeField] private BoxCollider2D _cameraBounds;
 
     private Camera _camera;
-
+    
     private void Awake() => CacheComponents();
 
     private void LateUpdate()
@@ -31,7 +30,7 @@ public class CameraFollow2D : MonoBehaviour
     
     private void CacheComponents()
     {
-        _camera = GetComponent<Camera>();
+        _camera = GetComponentInChildren<Camera>();
     }
 
 
