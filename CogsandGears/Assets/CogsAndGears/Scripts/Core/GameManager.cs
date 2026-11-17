@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
     [SerializeField] private Texture2D _cursorTexture;
+    [SerializeField] private SceneReference _nextScene;
     
     private void Awake()
     {
@@ -29,5 +31,25 @@ public class GameManager : SingletonBehaviour<GameManager>
                 hotspot, 
                 CursorMode.ForceSoftware);
         }        
+    }
+    
+    public void LoadNextScene()
+    {
+        if (!_nextScene.IsValid)
+        {
+            Debug.LogWarning("SceneReferenceSample : 씬이 연결되지 않았음");
+            return;
+        }
+
+        SceneManager.LoadScene(_nextScene.SceneName);
+    }
+    
+    public void ExitGame()
+    {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
     }
 }
