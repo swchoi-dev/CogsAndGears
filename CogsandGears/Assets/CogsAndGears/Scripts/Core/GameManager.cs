@@ -1,15 +1,24 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
     [SerializeField] private Texture2D _cursorTexture;
     [SerializeField] private SceneReference _nextScene;
+    [SerializeField] private GameObject _inventoryUI;
+    
+    //Temp
+    [SerializeField] private InputActionReference _invenAction;
+    
+    private bool _isInvenActive;
     
     private void Awake()
     {
         CacheComponents();
         InitCursor();
+        _invenAction.action.Enable();
+        _invenAction.action.performed += _ => _inventoryUI.SetActive(!_inventoryUI.activeSelf);
     }
 
     private void CacheComponents()
