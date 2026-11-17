@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BloowWeapon
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
   _damage: 15
-  _fireRate: 3
+  _fireRate: 5
   _projectileSpeed: 15
-  spreadAngle: 15
+  spreadAngle: 0
   _projectilePrefab: {fileID: 2577540333429591160, guid: e4eeb309493dd8a4eba387e11103ac73, type: 3}

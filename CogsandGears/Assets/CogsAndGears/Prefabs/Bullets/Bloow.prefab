@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4865881216753398507}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 3325846529534602057}
   - component: {fileID: 854465216301873091}
   - component: {fileID: 6525716940000940675}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4950,14 +4950,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5025054352421053803}
-  - component: {fileID: 6031083365647996619}
   - component: {fileID: 6163381624160628745}
   - component: {fileID: 7315528469273278743}
   - component: {fileID: 4253061998116918731}
   - component: {fileID: 5720831484267209686}
   - component: {fileID: 2577540333429591160}
-  m_Layer: 0
-  m_Name: Projectile2
+  m_Layer: 8
+  m_Name: Bloow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4979,33 +4978,6 @@ Transform:
   - {fileID: 4865881216753398507}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6031083365647996619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8844368169996093480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 605a456cfc02f6b499a64717539a27e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 30
-  hitOffset: 0.1
-  UseFirePointRotation: 0
-  rotationOffset: {x: 0, y: 0, z: 0}
-  hit: {fileID: 3499497269958261231}
-  hitPS: {fileID: 3627406659799552663}
-  flash: {fileID: 8308980556971192360}
-  projectilePS: {fileID: 854465216301873091}
-  Detached: []
-  rb: {fileID: 7315528469273278743}
-  col: {fileID: 4253061998116918731}
-  lightSourse: {fileID: 6163381624160628745}
-  notDestroy: 1
-  lifeTime: 5
-  detachedLifeTime: 1
 --- !u!108 &6163381624160628745
 Light:
   m_ObjectHideFlags: 0
@@ -5183,9 +5155,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4865881216753398507}
     m_Modifications:
+    - target: {fileID: 1135279856644726, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1471992635208748, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1570423950586096, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
       propertyPath: m_Name
       value: Hit 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1570423950586096, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1907868142113970, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1974902733138274, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4146286364494006, guid: 01afa85b461d4dc49ba4530e39b61739, type: 3}
       propertyPath: m_RootOrder
@@ -5306,6 +5298,14 @@ PrefabInstance:
     - target: {fileID: 1029261581862512, guid: 99649c5fed10ce848a575f679ff0e303, type: 3}
       propertyPath: m_Name
       value: Flash 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029261581862512, guid: 99649c5fed10ce848a575f679ff0e303, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1150854562711114, guid: 99649c5fed10ce848a575f679ff0e303, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4077269520655242, guid: 99649c5fed10ce848a575f679ff0e303, type: 3}
       propertyPath: m_RootOrder
