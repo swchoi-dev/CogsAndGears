@@ -105,7 +105,6 @@ GameObject:
   - component: {fileID: 4972724849873922119}
   - component: {fileID: 5015969989243954955}
   - component: {fileID: 8386306011466372665}
-  - component: {fileID: 2335025951485970691}
   - component: {fileID: 6774468963535480454}
   - component: {fileID: 3199701320867618872}
   - component: {fileID: 5374175460108690201}
@@ -196,18 +195,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0.03}
   m_Size: {x: 0.8, y: 2.1}
   m_Direction: 0
---- !u!114 &2335025951485970691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3692533306584443682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f979ae5d0b12f2547b515bf3257d28a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!114 &6774468963535480454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,7 +210,7 @@ MonoBehaviour:
   _moveAction: {fileID: 3573353440474072131, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _dashAction: {fileID: -6435662806929191593, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _playerAnimation: {fileID: 5374175460108690201}
-  _modelRoot: {fileID: 0}
+  _modelRoot: {fileID: 5025871713780278967}
   _moveSpeed: 3
   _dashForce: 3
   _dashDuration: 1
@@ -242,14 +229,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAim
   _camera: {fileID: 0}
-  _modelRoot: {fileID: 0}
+  _modelRoot: {fileID: 5025871713780278967}
   _aimOrigin: {fileID: 814593790123514199}
   _upperBodyTarget: {fileID: 1653208089267541210}
-  _armTarget: {fileID: 0}
-  _handTarget: {fileID: 0}
+  _armTarget: {fileID: 7130583211184807275}
+  _handTarget: {fileID: 2110622891542350305}
   _turnSpeed: 540
-  _turnAngle: 50
-  _armReach: 0.45
+  _bodyRotateRange: 50
+  _armReach: 0.5
   _handIKConstraint: {fileID: 3584668651485566872}
 --- !u!114 &5374175460108690201
 MonoBehaviour:
@@ -560,7 +547,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7848190150059661977}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
