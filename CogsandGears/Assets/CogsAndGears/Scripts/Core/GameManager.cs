@@ -6,24 +6,39 @@ public class GameManager : SingletonBehaviour<GameManager>
 {
     [SerializeField] private Texture2D _cursorTexture;
     [SerializeField] private SceneReference _nextScene;
-    [SerializeField] private GameObject _inventoryUI;
     
-    //Temp
-    [SerializeField] private InputActionReference _invenAction;
-    
-    private bool _isInvenActive;
+    private InvenController _inventory;
     
     private void Awake()
     {
-        CacheComponents();
         InitCursor();
-        _invenAction.action.Enable();
-        _invenAction.action.performed += _ => _inventoryUI.SetActive(!_inventoryUI.activeSelf);
     }
 
-    private void CacheComponents()
+    public void RegisterInventory(InvenController inventory)
     {
-        
+        _inventory = inventory;
+        _inventory.Opened += OnInvenOpened;
+        _inventory.Closed += OnInvenClosed;
+    }
+
+    public void UnregisterInventory(InvenController inventory)
+    {
+        if (_inventory != inventory)
+            return;
+
+        _inventory.Opened -= OnInvenOpened;
+        _inventory.Closed -= OnInvenClosed;
+        _inventory = null;
+    }
+
+    private void OnInvenOpened()
+    {
+        Time.timeScale = 0;
+    }
+
+    private void OnInvenClosed()
+    {
+        Time.timeScale = 1;
     }
 
     private void InitCursor()
