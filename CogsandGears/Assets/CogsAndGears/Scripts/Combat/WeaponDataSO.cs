@@ -15,16 +15,17 @@ public class WeaponDataSO : ScriptableObject
     [Min(1f)]
     [SerializeField] private float _projectileSpeed;
     
+    [Header("Projectile Spread")]
+    [Range(0f, 15f)]
+    public float spreadAngle = 5f;
+    
     [Header("Prefabs")]
-    [SerializeField] private GameObject _muzzleFlashPrefab;
     [SerializeField] private Projectile _projectilePrefab;
-    [SerializeField] private GameObject _hitEffectPRefab;
     
     public float Damage => _damage;
     public float FireRate => _fireRate;
     public float ProjectileSpeed => _projectileSpeed;
+    public float SpreadAngle => spreadAngle;
     
-    public GameObject MuzzleFlashPrefab => _muzzleFlashPrefab;
     public Projectile ProjectilePrefab => _projectilePrefab;
-    public GameObject HitEffectPrefab => _hitEffectPRefab;
 }

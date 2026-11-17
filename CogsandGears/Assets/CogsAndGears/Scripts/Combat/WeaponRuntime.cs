@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class WeaponRuntime
 {
     public event Action<WeaponRuntime> FireRequested;
     
-    private WeaponDataSO _data;
+    [SerializeField] private WeaponDataSO _data;
+    
     private float _nextFireTime;
     
     public WeaponDataSO Data => _data;

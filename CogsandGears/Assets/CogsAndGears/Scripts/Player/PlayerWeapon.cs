@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerWeapon : MonoBehaviour
 {
@@ -9,17 +10,28 @@ public class PlayerWeapon : MonoBehaviour
     
     [SerializeField] private WeaponDataSO _defaultData;
     [SerializeField] private Transform _muzzlePoint;
-    
+
+    [SerializeField] private List<WeaponRuntime> _weapons;
+
+    private PlayerDash _playerDash;
     private PlayerInputHandler _playerInput;
-    private List<WeaponRuntime> _weapons;
     private WeaponRuntime _defaultWeapon;
 
     private void Awake() => CacheComponents();
 
-    private void Start() => InitWeaponData();
-
+    private void OnEnable()
+    {
+        InitWeaponData();
+        
+        foreach (var weapon in _weapons)
+        {
+            weapon.FireRequested += OnFire;
+        }
+    }
+    
     private void Update()
     {
+        if (_playerDash.IsDashing) return;
         if (!_playerInput.IsFirePressed) return;
         
         float currentTime = Time.time;
@@ -27,6 +39,14 @@ public class PlayerWeapon : MonoBehaviour
         foreach (var weapon in _weapons)
         {
             weapon.TryFire(currentTime);
+        }
+    }
+    
+    private void OnDisable()
+    {
+        foreach (var weapon in _weapons)
+        {
+            weapon.FireRequested -= OnFire;
         }
     }
     
@@ -55,8 +75,15 @@ public class PlayerWeapon : MonoBehaviour
         
         camAnim.Play(camAnim.clip.name);
         
-        Quaternion projectileRotation =
-            Quaternion.LookRotation(_muzzlePoint.right);
+        // 무기별 랜덤 탄착각
+        float spreadAngle = Random.Range(-data.SpreadAngle, data.SpreadAngle);
+
+        // 총구 방향에 탄착각 적용
+        Vector3 fireDirection =
+            Quaternion.AngleAxis(spreadAngle, Vector3.forward) * _muzzlePoint.right;
+
+        // 최종 투사체 회전
+        Quaternion projectileRotation = Quaternion.LookRotation(fireDirection);
         
         var projectile = Instantiate(
             data.ProjectilePrefab,
@@ -69,7 +96,6 @@ public class PlayerWeapon : MonoBehaviour
         {
             Damage = data.Damage,
             Speed = data.ProjectileSpeed,
-            HitEffectPrefab = data.HitEffectPrefab,
             Owner = gameObject,
         };
         
@@ -81,13 +107,12 @@ public class PlayerWeapon : MonoBehaviour
     private void InitWeaponData()
     {
         _defaultWeapon = new WeaponRuntime(_defaultData);
-        _weapons = new() { _defaultWeapon };
-        
-        _defaultWeapon.FireRequested += OnFire;
+        _weapons.Add(_defaultWeapon);
     }
 
     private void CacheComponents()
     {
         _playerInput = GetComponent<PlayerInputHandler>();
+        _playerDash = GetComponent<PlayerDash>();
     }
 }
