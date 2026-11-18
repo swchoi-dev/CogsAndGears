@@ -10,6 +10,7 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
     [SerializeField] private List<StageController> _stages;
     [SerializeField] private InvenController _inventory;
     [SerializeField] private Transform _cogs;
+    [SerializeField] private CameraFollow2D _cameraFollow2D;
     
     private GameFlowState _flowState;
     private StageController _currentStage;
@@ -58,7 +59,9 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
         
         _currentStage.gameObject.SetActive(true);
         _cogs.position = _currentStage.PlayerSpawnPoint.position;
-
+        
+        _cameraFollow2D.SetCameraBounds(_currentStage.CameraBounds);
+        
         if (_prevStage != null)
         {
             _prevStage.gameObject.SetActive(false);

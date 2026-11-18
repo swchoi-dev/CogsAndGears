@@ -6,6 +6,7 @@ public class StageController : MonoBehaviour
 {
     [SerializeField] private List<MonsterSpawnData> _monsters;
     [SerializeField] private Transform _playerSpawnPoint;
+    [SerializeField] private BoxCollider2D _cameraBounds;
 
     private float _elapsedTime;
     private int _spawnedMonsterCount;
@@ -15,6 +16,7 @@ public class StageController : MonoBehaviour
 
     public event Action Cleared;
     public Transform PlayerSpawnPoint => _playerSpawnPoint;
+    public BoxCollider2D CameraBounds => _cameraBounds;
 
     private void Update()
     {
