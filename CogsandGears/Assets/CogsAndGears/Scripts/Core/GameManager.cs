@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
     [SerializeField] private Texture2D _cursorTexture;
-    [SerializeField] private SceneReference _nextScene;
-    [SerializeField] private SceneReference _gameOverScene;
-    [SerializeField] private SceneReference _gameClearScene;
+    [SerializeField] private SceneReference _mainScene;
+    [SerializeField] private SceneReference _overScene;
+    [SerializeField] private SceneReference _clearScene;
     
     private InvenController _inventory;
     private GameFlowManager _flowManager;
@@ -62,10 +63,10 @@ public class GameManager : SingletonBehaviour<GameManager>
         switch (state)
         {
             case GameFlowState.GAME_CLEAR:
-                SceneManager.LoadScene(_gameClearScene.SceneName);
+                SceneManager.LoadScene(_clearScene.SceneName);
                 break;
             case GameFlowState.GAME_OVER:
-                SceneManager.LoadScene(_gameOverScene.SceneName);
+                SceneManager.LoadScene(_overScene.SceneName);
                 break;
         }
     }
@@ -88,13 +89,13 @@ public class GameManager : SingletonBehaviour<GameManager>
     
     public void LoadNextScene()
     {
-        if (!_nextScene.IsValid)
+        if (!_mainScene.IsValid)
         {
             Debug.LogWarning("SceneReferenceSample : 씬이 연결되지 않았음");
             return;
         }
 
-        SceneManager.LoadScene(_nextScene.SceneName);
+        SceneManager.LoadScene(_mainScene.SceneName);
     }
     
     public void ExitGame()

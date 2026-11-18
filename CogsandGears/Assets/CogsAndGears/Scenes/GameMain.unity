@@ -3130,18 +3130,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _isDontDestroyOnLoad: 1
   _cursorTexture: {fileID: 2800000, guid: 003bed2e424b1e0418a5e3498882a29d, type: 3}
-  _nextScene:
-    _sceneAsset: {fileID: 0}
-    _scenePath: 
-    _sceneName: 
-  _gameOverScene:
-    _sceneAsset: {fileID: 0}
-    _scenePath: 
-    _sceneName: 
-  _gameClearScene:
-    _sceneAsset: {fileID: 0}
-    _scenePath: 
-    _sceneName: 
+  _mainScene:
+    _sceneAsset: {fileID: 102900000, guid: fa0a35c3b45b52849ad74d2c52536cb2, type: 3}
+    _scenePath: Assets/CogsAndGears/Scenes/GameMain.unity
+    _sceneName: GameMain
+  _overScene:
+    _sceneAsset: {fileID: 102900000, guid: 5bf760ca935325d42a967ba38e6848ed, type: 3}
+    _scenePath: Assets/CogsAndGears/Scenes/GameOver.unity
+    _sceneName: GameOver
+  _clearScene:
+    _sceneAsset: {fileID: 102900000, guid: e8536d2640bb9074abab77b6260fc9c5, type: 3}
+    _scenePath: Assets/CogsAndGears/Scenes/GameClear.unity
+    _sceneName: GameClear
 --- !u!4 &1697801581
 Transform:
   m_ObjectHideFlags: 0

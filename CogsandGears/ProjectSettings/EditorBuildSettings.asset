@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/CogsAndGears/Scenes/GameMain.unity
     guid: fa0a35c3b45b52849ad74d2c52536cb2
+  - enabled: 1
+    path: Assets/CogsAndGears/Scenes/GameOver.unity
+    guid: 5bf760ca935325d42a967ba38e6848ed
+  - enabled: 1
+    path: Assets/CogsAndGears/Scenes/GameClear.unity
+    guid: e8536d2640bb9074abab77b6260fc9c5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
