@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvenItem : MonoBehaviour
+public class InvenItem
 {
     [SerializeField] private ItemDataSO _itemData;
 
