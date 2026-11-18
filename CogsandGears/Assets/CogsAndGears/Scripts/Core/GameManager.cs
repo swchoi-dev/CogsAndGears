@@ -6,14 +6,31 @@ public class GameManager : SingletonBehaviour<GameManager>
 {
     [SerializeField] private Texture2D _cursorTexture;
     [SerializeField] private SceneReference _nextScene;
+    [SerializeField] private SceneReference _gameOverScene;
+    [SerializeField] private SceneReference _gameClearScene;
     
     private InvenController _inventory;
+    private GameFlowManager _flowManager;
     
     private void Awake()
     {
         InitCursor();
     }
 
+    public void RegisterFlowManager(GameFlowManager flowManager)
+    {
+        _flowManager = flowManager;
+        _flowManager.ChangedState += OnChangedState;
+    }
+
+    public void UnRegisterFlowManager(GameFlowManager flowManager)
+    {
+        if (_flowManager != flowManager) return;
+        
+        _flowManager.ChangedState -= OnChangedState;
+        _flowManager = null;
+    }
+    
     public void RegisterInventory(InvenController inventory)
     {
         _inventory = inventory;
@@ -23,8 +40,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public void UnregisterInventory(InvenController inventory)
     {
-        if (_inventory != inventory)
-            return;
+        if (_inventory != inventory) return;
 
         _inventory.Opened -= OnInvenOpened;
         _inventory.Confirmed -= OnInvenClosed;
@@ -39,6 +55,19 @@ public class GameManager : SingletonBehaviour<GameManager>
     private void OnInvenClosed()
     {
         Time.timeScale = 1;
+    }
+
+    private void OnChangedState(GameFlowState state)
+    {
+        switch (state)
+        {
+            case GameFlowState.GAME_CLEAR:
+                SceneManager.LoadScene(_gameClearScene.SceneName);
+                break;
+            case GameFlowState.GAME_OVER:
+                SceneManager.LoadScene(_gameOverScene.SceneName);
+                break;
+        }
     }
 
     private void InitCursor()

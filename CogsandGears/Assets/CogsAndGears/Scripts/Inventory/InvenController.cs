@@ -12,7 +12,7 @@ public class InvenController : MonoBehaviour
     public event Action Opened;
     public event Action Confirmed;
     
-    private void Start()
+    private void Awake()
     {
         GameManager.Instance.RegisterInventory(this);
     }

@@ -4,7 +4,7 @@ using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class GameFlowManager : MonoBehaviour
+public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
 {
     private const int FIRST_STAGE = 0;
     [SerializeField] private List<StageController> _stages;
@@ -16,10 +16,14 @@ public class GameFlowManager : MonoBehaviour
     private StageController _prevStage;
     private int _currentStageIndex;
 
-    public event Action<GameFlowState> ChangedFlowState;
-    public GameFlowState FlowState => _flowState;
-    
+    public event Action<GameFlowState> ChangedState;
 
+    private void Awake()
+    {
+        GameManager.Instance.RegisterFlowManager(this);
+    }
+    
+    
     private void OnEnable()
     {
         _inventory.Confirmed += OnInvenConfirm;
@@ -35,6 +39,12 @@ public class GameFlowManager : MonoBehaviour
     {
         _inventory.Confirmed -= OnInvenConfirm;
     }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.UnRegisterFlowManager(this);
+    }
+    
     
     private void InitGameRun()
     {
@@ -104,6 +114,6 @@ public class GameFlowManager : MonoBehaviour
         if (_flowState == flowState) return;
         _flowState = flowState;
         
-        ChangedFlowState?.Invoke(_flowState);
+        ChangedState?.Invoke(_flowState);
     }
 }
