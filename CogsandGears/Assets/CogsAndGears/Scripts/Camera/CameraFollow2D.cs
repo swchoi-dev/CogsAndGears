@@ -22,9 +22,6 @@ public class CameraFollow2D : MonoBehaviour
     {
         _cameraBounds = cameraBounds;
         UpdateCameraPosition();
-        
-        Debug.Log($"Camera Bounds Updated: {transform.position.x}");
-        UpdatedBounds?.Invoke();
     }
 
     private void UpdateCameraPosition()

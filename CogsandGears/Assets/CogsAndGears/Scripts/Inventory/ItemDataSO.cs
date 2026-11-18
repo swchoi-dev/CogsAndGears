@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ItemDataSO", menuName = "Scriptable Objects/ItemDataSO")]
@@ -9,9 +10,11 @@ public abstract class ItemDataSO : ScriptableObject
 
     [Header("Inventory Info")]
     [SerializeField] private Vector2Int _size;
+    [SerializeField] private List<Vector2Int> _occupiedCells;
     
     public string ItemName => _itemName;
     public Sprite Icon => _icon;
     
     public Vector2Int Size => _size;
+    public List<Vector2Int> OccupiedCells => _occupiedCells;
 }
