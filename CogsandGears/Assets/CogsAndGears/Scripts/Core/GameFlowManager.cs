@@ -58,14 +58,14 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
         // TO-DO _currentStage.PlayStartAnim();
         
         _currentStage.gameObject.SetActive(true);
-        _cogs.position = _currentStage.PlayerSpawnPoint.position;
-        
-        _cameraFollow2D.SetCameraBounds(_currentStage.CameraBounds);
         
         if (_prevStage != null)
         {
             _prevStage.gameObject.SetActive(false);
         }
+        
+        _cogs.position = _currentStage.PlayerSpawnPoint.position;
+        _cameraFollow2D.SetCameraBounds(_currentStage.CameraBounds);
         
         _currentStage.Cleared += StageClear;
         _currentStage.StartStage();

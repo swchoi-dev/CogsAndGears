@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [DefaultExecutionOrder(100)]
@@ -7,13 +8,29 @@ public class CameraFollow2D : MonoBehaviour
 
     private Camera _camera;
     private BoxCollider2D _cameraBounds;
+
+    public event Action UpdatedBounds;
     
     private void Awake() => CacheComponents();
 
     private void LateUpdate()
     {
-        if (_camera == null || _cameraBounds == null) return;
+        UpdateCameraPosition();
+    }
+    
+    public void SetCameraBounds(BoxCollider2D cameraBounds)
+    {
+        _cameraBounds = cameraBounds;
+        UpdateCameraPosition();
         
+        Debug.Log($"Camera Bounds Updated: {transform.position.x}");
+        UpdatedBounds?.Invoke();
+    }
+
+    private void UpdateCameraPosition()
+    {
+        if (_camera == null || _cameraBounds == null) return;
+
         Bounds bounds = _cameraBounds.bounds;
 
         float halfWidth = _camera.orthographicSize * _camera.aspect;
@@ -27,15 +44,7 @@ public class CameraFollow2D : MonoBehaviour
 
         Vector3 position = transform.position;
         position.x = targetX;
-        transform.position = position;
-    }
-
-    public void SetCameraBounds(BoxCollider2D cameraBounds)
-    {
-        _cameraBounds = cameraBounds;
-        
-        Vector3 position = transform.position;
-        position.y = _cameraBounds.bounds.center.y;
+        position.y = bounds.center.y;
         transform.position = position;
     }
     

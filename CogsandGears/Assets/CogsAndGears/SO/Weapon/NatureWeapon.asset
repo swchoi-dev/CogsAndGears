@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0587bf9cd52df9141a523dc3e9d5d171, type: 3}
   m_Name: NatureWeapon
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
+  _itemName: NatureGun
+  _icon: {fileID: 0}
+  _size: {x: 0, y: 0}
   _damage: 10
   _fireRate: 5
   _projectileSpeed: 15
