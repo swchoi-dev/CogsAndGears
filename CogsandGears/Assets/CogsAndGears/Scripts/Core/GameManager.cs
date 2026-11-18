@@ -18,7 +18,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         _inventory = inventory;
         _inventory.Opened += OnInvenOpened;
-        _inventory.Closed += OnInvenClosed;
+        _inventory.Confirmed += OnInvenClosed;
     }
 
     public void UnregisterInventory(InvenController inventory)
@@ -27,7 +27,7 @@ public class GameManager : SingletonBehaviour<GameManager>
             return;
 
         _inventory.Opened -= OnInvenOpened;
-        _inventory.Closed -= OnInvenClosed;
+        _inventory.Confirmed -= OnInvenClosed;
         _inventory = null;
     }
 

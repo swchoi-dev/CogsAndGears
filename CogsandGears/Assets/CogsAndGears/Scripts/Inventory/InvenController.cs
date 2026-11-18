@@ -10,12 +10,7 @@ public class InvenController : MonoBehaviour
     [SerializeField] private InputActionReference _invenAction;
 
     public event Action Opened;
-    public event Action Closed;
-    
-    private void Awake()
-    {
-        
-    }
+    public event Action Confirmed;
     
     private void Start()
     {
@@ -43,7 +38,7 @@ public class InvenController : MonoBehaviour
         }
         else
         {
-            Closed?.Invoke();
+            Confirmed?.Invoke();
         }
     }
 
@@ -56,6 +51,6 @@ public class InvenController : MonoBehaviour
     public void ConfirmInven()
     {
         _inventoryUI.SetActive(false);
-        Closed?.Invoke();
+        Confirmed?.Invoke();
     }
 }
