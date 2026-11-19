@@ -4,7 +4,7 @@ using UnityEngine;
     fileName = "WeaponData",
     menuName = "CogsAndGears/Weapon Data"
 )]
-public class WeaponDataSO : ScriptableObject
+public class WeaponDataSO : ItemDataSO
 {
     [Min(1f)]
     [SerializeField] private float _damage;

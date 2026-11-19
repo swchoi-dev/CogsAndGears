@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0587bf9cd52df9141a523dc3e9d5d171, type: 3}
   m_Name: LightningWeapon 1
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
+  _itemName: LightningPistol
+  _icon: {fileID: 0}
+  _size: {x: 0, y: 0}
   _damage: 20
   _fireRate: 3
   _projectileSpeed: 15

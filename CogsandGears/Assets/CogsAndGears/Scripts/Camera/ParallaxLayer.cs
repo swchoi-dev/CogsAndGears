@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [DefaultExecutionOrder(200)]
@@ -5,11 +6,21 @@ public class ParallaxLayer : MonoBehaviour
 {
     [SerializeField] private Transform _targetCamera;
     [SerializeField, Range(0f, 1f)] private float _parallaxFactor = 0.5f;
+    [SerializeField] private CameraFollow2D _cameraFollow2D;
 
+    private Vector3 _originPosition;
     private Vector3 _initPosition;
     private float _initCameraX;
+
+    private void Awake()
+    {
+        _originPosition = transform.position;
+    }
     
-    private void Start() => InitPosition();
+    private void OnEnable()
+    {
+        _cameraFollow2D.UpdatedBounds += InitPosition;
+    }
 
     private void LateUpdate()
     {
@@ -24,10 +35,22 @@ public class ParallaxLayer : MonoBehaviour
         );
     }
     
+    private void OnDisable()
+    {
+        _cameraFollow2D.UpdatedBounds -= InitPosition;
+    }
+    
     private void InitPosition()
     {
-        _initPosition = transform.position;
         _initCameraX = _targetCamera.position.x;
+        
+        _initPosition = new Vector3(
+            _initCameraX + _originPosition.x,
+            _originPosition.y,
+            _originPosition.z
+        );
+
+        transform.position = _initPosition;
     }
     
 }
