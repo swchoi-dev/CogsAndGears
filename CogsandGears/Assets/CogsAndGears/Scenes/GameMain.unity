@@ -2724,6 +2724,54 @@ MonoBehaviour:
   _initialUnlockSize: {x: 3, y: 3}
   _unlockedColor: {r: 1, g: 1, b: 1, a: 1}
   _lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+--- !u!1 &812360524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 812360525}
+  - component: {fileID: 812360526}
+  m_Layer: 5
+  m_Name: InvenItemUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &812360525
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812360524}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1288295195}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &812360526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812360524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f439269808f37142967942156198ab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InvenItemUI
 --- !u!1 &830847222
 GameObject:
   m_ObjectHideFlags: 0
@@ -4372,6 +4420,7 @@ RectTransform:
   m_Children:
   - {fileID: 327531898}
   - {fileID: 48939507}
+  - {fileID: 812360525}
   - {fileID: 795329558}
   - {fileID: 705365126}
   - {fileID: 1052505074}
@@ -6166,6 +6215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1984807437}
+  - component: {fileID: 1984807438}
   m_Layer: 0
   m_Name: InventoryUI
   m_TagString: Untagged
@@ -6189,6 +6239,18 @@ Transform:
   - {fileID: 1288295195}
   m_Father: {fileID: 1890485498}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1984807438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1984807436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95daa08b568d3a049a7863b7b4f2a7c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InvenUI
 --- !u!1 &1998339830
 GameObject:
   m_ObjectHideFlags: 0
