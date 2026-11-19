@@ -13,6 +13,12 @@ public class InvenGrid : MonoBehaviour
     [SerializeField] private Color _unlockedColor = Color.white;
     [SerializeField] private Color _lockedColor = Color.gray;
 
+    [Header("Placement Preview")]
+    [SerializeField] private Color _validPreviewColor = Color.green;
+    [SerializeField] private Color _invalidPreviewColor = Color.red;
+
+    private readonly List<Vector2Int> _previewCells = new();
+    
     private bool[,] _unlockedCells;
     private InvenItem[,] _occupiedCells;
     private Image[,] _cellImages;
@@ -228,5 +234,39 @@ public class InvenGrid : MonoBehaviour
                    (position.y + (size.y - 1) * 0.5f) * stepY;
 
          return gridRect.TransformPoint(new Vector3(x, y, 0f));
+     }
+     
+     public void ShowPlacementPreview(InvenItem item, Vector2Int position)
+     {
+         ClearPlacementPreview();
+
+         bool canPlace = CanPlace(item, position);
+         Color previewColor = canPlace
+             ? _validPreviewColor
+             : _invalidPreviewColor;
+
+         foreach (Vector2Int cell in item.GetOccupiedCells())
+         {
+             Vector2Int target = position + cell;
+
+             if (!IsInside(target))
+                 continue;
+
+             _cellImages[target.x, target.y].color = previewColor;
+             _previewCells.Add(target);
+         }
+     }
+     
+     public void ClearPlacementPreview()
+     {
+         foreach (Vector2Int cell in _previewCells)
+         {
+             _cellImages[cell.x, cell.y].color =
+                 _unlockedCells[cell.x, cell.y]
+                     ? _unlockedColor
+                     : _lockedColor;
+         }
+
+         _previewCells.Clear();
      }
 }

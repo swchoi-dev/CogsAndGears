@@ -25,6 +25,7 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private bool _wasPlacedAtDragStart;
     private Quaternion _origiRotation;
     private int _rotationCount;
+    private PointerEventData _lastDragEventData;
 
     public bool IsPlaced => _isPlaced;
     public InvenItem Item => _item;
@@ -40,7 +41,11 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             _item.Rotate();
             _rectTransform.Rotate(0f, 0f, -90f, Space.Self);
             _rotationCount++;
+            
+            if (_lastDragEventData != null)
+                UpdatePlacementPreview(_lastDragEventData);
         }
+        
     }
     
     public void SetUpDrag(RectTransform dragLayer, InvenGrid invenGrid)
@@ -72,6 +77,9 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (_dragLayer == null) return;
+        _isDragging = true;
+        
+        _lastDragEventData = eventData;
         
         _originParent = transform.parent;
         _originPosition = transform.position;
@@ -82,27 +90,31 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         _origiRotation = _rectTransform.localRotation;
         _rotationCount = 0;
         
-        _isDragging = true;
-        
         _rectTransform.SetParent(_dragLayer, false);
         _rectTransform.SetAsLastSibling();
 
         _rectTransform.localScale = Vector3.one;
 
         MoveToPointer(eventData);
+        UpdatePlacementPreview(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (!_isDragging) return;
+        _lastDragEventData = eventData;
         
         MoveToPointer(eventData);
+        UpdatePlacementPreview(eventData);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!_isDragging) return;
+        
+        _lastDragEventData = null;
         _isDragging = false;
+        _invenGrid.ClearPlacementPreview();
         
         bool isInsideGrid = _invenGrid.TryGetDropPosition(
             eventData.position,
@@ -153,6 +165,22 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         {
             _rectTransform.position =
                 _dragLayer.TransformPoint(localPosition);
+        }
+    }
+    
+    private void UpdatePlacementPreview(PointerEventData eventData)
+    {
+        if (_invenGrid.TryGetDropPosition(
+                eventData.position,
+                eventData.pressEventCamera,
+                _item,
+                out Vector2Int position))
+        {
+            _invenGrid.ShowPlacementPreview(_item, position);
+        }
+        else
+        {
+            _invenGrid.ClearPlacementPreview();
         }
     }
 }
