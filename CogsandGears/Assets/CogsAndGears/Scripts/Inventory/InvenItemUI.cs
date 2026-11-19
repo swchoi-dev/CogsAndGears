@@ -48,7 +48,7 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         
     }
     
-    public void SetUpDrag(RectTransform dragLayer, InvenGrid invenGrid)
+    public void SetupDrag(RectTransform dragLayer, InvenGrid invenGrid)
     {
         _dragLayer = dragLayer;
         _invenGrid = invenGrid;
@@ -182,5 +182,10 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         {
             _invenGrid.ClearPlacementPreview();
         }
+    }
+    
+    public void SetPlaced(bool placed)
+    {
+        _isPlaced = placed;
     }
 }

@@ -9,6 +9,8 @@ public class InvenGrid : MonoBehaviour
     [SerializeField] private Vector2Int _initialUnlockPosition;
     [SerializeField] private Vector2Int _initialUnlockSize;
 
+    [SerializeField] private InvenUI _invenUI;
+    
     [Header("Cell UI")]
     [SerializeField] private Color _unlockedColor = Color.white;
     [SerializeField] private Color _lockedColor = Color.gray;
@@ -16,6 +18,12 @@ public class InvenGrid : MonoBehaviour
     [Header("Placement Preview")]
     [SerializeField] private Color _validPreviewColor = Color.green;
     [SerializeField] private Color _invalidPreviewColor = Color.red;
+    
+    [Header("Default Weapon")]
+    [SerializeField] private WeaponDataSO _defaultWeaponData;
+    [SerializeField] private Vector2Int _defaultWeaponPosition;
+    
+    
 
     private readonly List<Vector2Int> _previewCells = new();
     
@@ -31,6 +39,23 @@ public class InvenGrid : MonoBehaviour
     {
         CacheComponents();
         InitializeGrid();
+        InitDefaultWeaponData();
+    }
+    
+    private void InitDefaultWeaponData()
+    {
+        if (_defaultWeaponData == null) return;
+
+        InvenItem item = new InvenItem(_defaultWeaponData);
+        
+        // 초기 점유 데이터 등록
+        foreach (Vector2Int cell in item.GetOccupiedCells())
+        {
+            Vector2Int position = _defaultWeaponPosition + cell;
+            _occupiedCells[position.x, position.y] = item;
+        }
+
+        _invenUI.CreateDefaultItem(item, _defaultWeaponPosition);
     }
     
     private void InitializeGrid()
@@ -62,7 +87,6 @@ public class InvenGrid : MonoBehaviour
                     _unlockedCells[position.x, position.y] = true;
             }
         }
-
         RefreshGrid();
     }
 

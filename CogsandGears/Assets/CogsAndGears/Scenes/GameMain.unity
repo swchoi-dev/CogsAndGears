@@ -2722,8 +2722,13 @@ MonoBehaviour:
   _gridSize: {x: 8, y: 4}
   _initialUnlockPosition: {x: 2, y: 0}
   _initialUnlockSize: {x: 4, y: 4}
+  _invenUI: {fileID: 1984807438}
   _unlockedColor: {r: 1, g: 1, b: 1, a: 1}
   _lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _validPreviewColor: {r: 0, g: 1, b: 0, a: 1}
+  _invalidPreviewColor: {r: 1, g: 0, b: 0, a: 1}
+  _defaultWeaponData: {fileID: 11400000, guid: 0ed3e524ed033284c958be486fd10a87, type: 2}
+  _defaultWeaponPosition: {x: 4, y: 0}
 --- !u!1 &830847222
 GameObject:
   m_ObjectHideFlags: 0
@@ -5939,6 +5944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c2d163803bfd32469a7d1e3b4db47af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InvenController
+  _invenAction: {fileID: 8803241521378923879, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _itemPool:
   - {fileID: 11400000, guid: 36bfd6b899e1e7d4785990516059e00b, type: 2}
   - {fileID: 11400000, guid: 80ef9bd034116734f81eb97b406fc184, type: 2}
@@ -5949,7 +5955,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1e145826815bb1949ac279ae34529eae, type: 2}
   - {fileID: 11400000, guid: 133f999f0081f374eb246425db1216a3, type: 2}
   _invenUI: {fileID: 1984807438}
-  _invenAction: {fileID: 8803241521378923879, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
+  _invenGrid: {fileID: 795329560}
+  _playerWeapon: {fileID: 3974719472233344733}
 --- !u!1001 &1897559084
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7103,6 +7110,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4972724849873922119, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
   m_PrefabInstance: {fileID: 5804346879512062369}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3974719472233344733 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3075742087625699469, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
+  m_PrefabInstance: {fileID: 5804346879512062369}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22ba96457133d4940831d8e937f9ef7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeapon
 --- !u!1001 &5804346879512062369
 PrefabInstance:
   m_ObjectHideFlags: 0

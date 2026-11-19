@@ -14,7 +14,7 @@ public class InvenUI : MonoBehaviour
     
     private readonly List<InvenItemUI> _candidateUIs = new();
 
-    public void ShowCandidates(IReadOnlyList<InvenItem> candidates)
+    public void CreateCandidates(IReadOnlyList<InvenItem> candidates)
     {
         ClearCandidates();
 
@@ -41,7 +41,7 @@ public class InvenUI : MonoBehaviour
                 _invenGrid.Spacing
             );
 
-            itemUI.SetUpDrag(_itemLayer, _invenGrid);
+            itemUI.SetupDrag(_itemLayer, _invenGrid);
             
             RectTransform itemRect = itemUI.GetComponent<RectTransform>();
 
@@ -50,6 +50,32 @@ public class InvenUI : MonoBehaviour
             
             _candidateUIs.Add(itemUI);
         }
+    }
+    
+    public void CreateDefaultItem(InvenItem item, Vector2Int position)
+    {
+        InvenItemUI itemUI = Instantiate(_itemPrefab, _itemLayer);
+
+        itemUI.Initialize(
+            item,
+            _invenGrid.CellSize,
+            _invenGrid.Spacing
+        );
+
+        itemUI.SetupDrag(_itemLayer, _invenGrid);
+
+        RectTransform rect = itemUI.GetComponent<RectTransform>();
+
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+
+        rect.localScale = Vector3.one;
+        rect.position =
+            _invenGrid.GetPlacementWorldPosition(item, position);
+
+        // 기존 InvenItemUI에서 배치 상태로 인식하도록 설정
+        itemUI.SetPlaced(true);
     }
 
     private void ClearCandidates()
