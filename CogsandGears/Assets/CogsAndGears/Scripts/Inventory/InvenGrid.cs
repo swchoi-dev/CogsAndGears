@@ -7,7 +7,7 @@ public class InvenGrid : MonoBehaviour
     [Header("Grid Settings")]
     [SerializeField] private Vector2Int _gridSize = new(8, 4);
     [SerializeField] private Vector2Int _initialUnlockPosition = new(2, 0);
-    [SerializeField] private Vector2Int _initialUnlockSize = new(3, 3);
+    [SerializeField] private Vector2Int _initialUnlockSize = new(3, 4);
 
     [Header("Cell UI")]
     [SerializeField] private Color _unlockedColor = Color.white;
@@ -36,7 +36,7 @@ public class InvenGrid : MonoBehaviour
             }
         }
 
-        // 초기 3×3 영역 해금
+        // 초기 3×4 영역 해금
         for (int y = 0; y < _initialUnlockSize.y; y++)
         {
             for (int x = 0; x < _initialUnlockSize.x; x++)
@@ -75,7 +75,10 @@ public class InvenGrid : MonoBehaviour
      // 아이템 배치 가능 여부
      public bool CanPlace(InvenItem item, Vector2Int position)
      {
-         foreach (Vector2Int cell in item.GetOccupiedCells())
+         List<Vector2Int> occupiedCells = item.GetOccupiedCells();
+         if (occupiedCells.Count == 0) return false;
+         
+         foreach (Vector2Int cell in occupiedCells)
          {
              Vector2Int target = position + cell;
 
