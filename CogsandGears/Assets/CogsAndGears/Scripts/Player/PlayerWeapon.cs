@@ -14,7 +14,6 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] private List<WeaponRuntime> _weapons;
 
     private PlayerDash _playerDash;
-    private PlayerInputHandler _playerInput;
     private WeaponRuntime _defaultWeapon;
 
     private void Awake() => CacheComponents();
@@ -32,7 +31,7 @@ public class PlayerWeapon : MonoBehaviour
     private void Update()
     {
         if (_playerDash.IsDashing) return;
-        if (!_playerInput.IsFirePressed) return;
+        if (!PlayerInputHandler.Instance.IsFirePressed) return;
         
         float currentTime = Time.time;
         
@@ -112,7 +111,6 @@ public class PlayerWeapon : MonoBehaviour
 
     private void CacheComponents()
     {
-        _playerInput = GetComponent<PlayerInputHandler>();
         _playerDash = GetComponent<PlayerDash>();
     }
 }

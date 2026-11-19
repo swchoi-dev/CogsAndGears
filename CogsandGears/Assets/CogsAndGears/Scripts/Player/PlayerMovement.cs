@@ -17,7 +17,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _deceleration = 5f;
     
     private Rigidbody2D _rigidbody;
-    private PlayerInputHandler _playerInput;
     private PlayerAim _playerAim;
     private PlayerAnimHandler _playerAnim;
     private PlayerDash _playerDash;
@@ -32,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        float signedMoveX = _playerInput.MoveX * _playerAim.FacingDirection;
+        float signedMoveX = PlayerInputHandler.Instance.MoveX * _playerAim.FacingDirection;
         
         float targetSpeed = Mathf.Abs(signedMoveX) * _runThreshold;
         
@@ -54,13 +53,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_playerDash.IsDashing) return;
         
-        _rigidbody.linearVelocity = new Vector2(_playerInput.MoveX * _moveSpeed, _rigidbody.linearVelocity.y);
+        _rigidbody.linearVelocity = new Vector2(PlayerInputHandler.Instance.MoveX * _moveSpeed, _rigidbody.linearVelocity.y);
     }
     
     private void CacheComponents()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _playerInput = GetComponent<PlayerInputHandler>();
         _playerAim = GetComponent<PlayerAim>();
         _playerAnim = GetComponent<PlayerAnimHandler>();
         _playerDash = GetComponent<PlayerDash>();

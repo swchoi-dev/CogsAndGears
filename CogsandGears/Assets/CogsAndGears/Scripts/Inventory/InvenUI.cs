@@ -10,6 +10,8 @@ public class InvenUI : MonoBehaviour
     [SerializeField] private InvenItemUI _itemPrefab;
     [SerializeField] private InvenGrid _invenGrid;
 
+    [SerializeField] private RectTransform _itemLayer;
+    
     private readonly List<InvenItemUI> _candidateUIs = new();
 
     public void ShowCandidates(IReadOnlyList<InvenItem> candidates)
@@ -39,6 +41,8 @@ public class InvenUI : MonoBehaviour
                 _invenGrid.Spacing
             );
 
+            itemUI.SetDragLayer(_itemLayer);
+            
             RectTransform slotRect = _slotPanels[i] as RectTransform;
             RectTransform itemRect = itemUI.GetComponent<RectTransform>();
 

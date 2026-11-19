@@ -76,9 +76,8 @@ public class InvenController : MonoBehaviour
     {
         if (_invenUI.gameObject.activeSelf) return;
         
-        
-        
         GenerateCandidates();
+        
         _invenUI.gameObject.SetActive(true);
         _invenUI.ShowCandidates(Candidates);
         
@@ -87,6 +86,8 @@ public class InvenController : MonoBehaviour
 
     public void CloseInven()
     {
+        if (!_invenUI.gameObject.activeSelf) return;
+        
         _invenUI.gameObject.SetActive(false);
         
         Closed?.Invoke();
@@ -97,6 +98,7 @@ public class InvenController : MonoBehaviour
         if (!_invenUI.gameObject.activeSelf) return;
         
         _invenUI.gameObject.SetActive(false);
+        
         Confirmed?.Invoke();
     }
 }
