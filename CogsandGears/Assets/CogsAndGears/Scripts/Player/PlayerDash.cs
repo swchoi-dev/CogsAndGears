@@ -10,7 +10,6 @@ public class PlayerDash : MonoBehaviour
     [SerializeField] private int _maxDashCount = 1;
     [SerializeField] private Transform _modelRoot;
     
-    private PlayerInputHandler _playerInput;
     private PlayerMovement _playerMovement;
     private PlayerAim _playerAim;
     private Rigidbody2D _rigidbody2D;
@@ -32,9 +31,9 @@ public class PlayerDash : MonoBehaviour
     
     private void Update()
     {
-        UpdateDashDirection(_playerInput.MoveX);
+        UpdateDashDirection(PlayerInputHandler.Instance.MoveX);
         
-        if (!_playerInput.IsDashPressed) return;
+        if (!PlayerInputHandler.Instance.IsDashPressed) return;
         
         if (!TryStartDash()) return;
         
@@ -45,7 +44,7 @@ public class PlayerDash : MonoBehaviour
     {
         if (_isDashRequested)
         {
-            float dashAmount = _playerInput.MoveX == 0 ? _dashForce + _playerMovement.MoveSpeed : _dashForce;
+            float dashAmount = PlayerInputHandler.Instance.MoveX == 0 ? _dashForce + _playerMovement.MoveSpeed : _dashForce;
             _rigidbody2D.AddForce(Vector2.right * (_dashDirection * dashAmount), ForceMode2D.Impulse);
             _isDashRequested = false;
         }
@@ -106,7 +105,6 @@ public class PlayerDash : MonoBehaviour
     
     private void CacheComponents()
     {
-        _playerInput = GetComponent<PlayerInputHandler>();
         _playerMovement = GetComponent<PlayerMovement>();
         _playerAim = GetComponent<PlayerAim>();
         _rigidbody2D = GetComponent<Rigidbody2D>();

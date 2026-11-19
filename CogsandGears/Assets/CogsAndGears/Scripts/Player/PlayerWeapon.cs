@@ -11,18 +11,16 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] private WeaponDataSO _defaultData;
     [SerializeField] private Transform _muzzlePoint;
 
-    [SerializeField] private List<WeaponRuntime> _weapons;
+    [SerializeField] private List<WeaponRuntime> _weapons = new();
 
     private PlayerDash _playerDash;
-    private PlayerInputHandler _playerInput;
     private WeaponRuntime _defaultWeapon;
 
+    public WeaponDataSO DefaultData => _defaultData;
     private void Awake() => CacheComponents();
 
     private void OnEnable()
     {
-        InitWeaponData();
-        
         foreach (var weapon in _weapons)
         {
             weapon.FireRequested += OnFire;
@@ -32,7 +30,7 @@ public class PlayerWeapon : MonoBehaviour
     private void Update()
     {
         if (_playerDash.IsDashing) return;
-        if (!_playerInput.IsFirePressed) return;
+        if (!PlayerInputHandler.Instance.IsFirePressed) return;
         
         float currentTime = Time.time;
         
@@ -55,7 +53,8 @@ public class PlayerWeapon : MonoBehaviour
         var weapon = new WeaponRuntime(data);
         _weapons.Add(weapon);
         
-        weapon.FireRequested += OnFire;
+        if (isActiveAndEnabled)
+            weapon.FireRequested += OnFire;
 
         return weapon;
     }
@@ -103,16 +102,9 @@ public class PlayerWeapon : MonoBehaviour
         projectile.Launch();
         
     }
-    
-    private void InitWeaponData()
-    {
-        _defaultWeapon = new WeaponRuntime(_defaultData);
-        _weapons.Add(_defaultWeapon);
-    }
 
     private void CacheComponents()
     {
-        _playerInput = GetComponent<PlayerInputHandler>();
         _playerDash = GetComponent<PlayerDash>();
     }
 }

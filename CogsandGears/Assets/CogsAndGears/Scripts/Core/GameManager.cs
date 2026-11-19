@@ -10,7 +10,6 @@ public class GameManager : SingletonBehaviour<GameManager>
     [SerializeField] private SceneReference _overScene;
     [SerializeField] private SceneReference _clearScene;
     
-    private InvenController _inventory;
     private GameFlowManager _flowManager;
     
     private void Awake()
@@ -31,32 +30,6 @@ public class GameManager : SingletonBehaviour<GameManager>
         _flowManager.ChangedState -= OnChangedState;
         _flowManager = null;
     }
-    
-    public void RegisterInventory(InvenController inventory)
-    {
-        _inventory = inventory;
-        _inventory.Opened += OnInvenOpened;
-        _inventory.Confirmed += OnInvenClosed;
-    }
-
-    public void UnregisterInventory(InvenController inventory)
-    {
-        if (_inventory != inventory) return;
-
-        _inventory.Opened -= OnInvenOpened;
-        _inventory.Confirmed -= OnInvenClosed;
-        _inventory = null;
-    }
-
-    private void OnInvenOpened()
-    {
-        Time.timeScale = 0;
-    }
-
-    private void OnInvenClosed()
-    {
-        Time.timeScale = 1;
-    }
 
     private void OnChangedState(GameFlowState state)
     {
@@ -67,6 +40,12 @@ public class GameManager : SingletonBehaviour<GameManager>
                 break;
             case GameFlowState.GAME_OVER:
                 SceneManager.LoadScene(_overScene.SceneName);
+                break;
+            case GameFlowState.INVENTORY:
+                Time.timeScale = 0;
+                break;
+            case GameFlowState.PLAYING:
+                Time.timeScale = 1;
                 break;
         }
     }

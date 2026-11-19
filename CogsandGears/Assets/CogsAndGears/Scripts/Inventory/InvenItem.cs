@@ -3,11 +3,26 @@ using UnityEngine;
 
 public class InvenItem
 {
-    [SerializeField] private ItemDataSO _itemData;
+    private ItemDataSO _itemData;
 
+    public ItemDataSO ItemData => _itemData;
     public ItemRotation Rotation { get; private set; } = ItemRotation.Angle0;
-    public void Rotate() => Rotation = ItemRotationUtility.Next(Rotation);
-    public Vector2Int RotatedSize() => ItemRotationUtility.GetRotatedSize(_itemData.Size, Rotation);
+    
+    public InvenItem(ItemDataSO itemData)
+    {
+        _itemData = itemData;
+    }
+
+    public void Rotate()
+    {
+        Rotation = ItemRotationUtility.Next(Rotation);
+    }
+
+    public Vector2Int RotatedSize()
+    {
+        return ItemRotationUtility.GetRotatedSize(_itemData.Size, Rotation);
+    }
+    
     public List<Vector2Int> GetOccupiedCells()
     {
         List<Vector2Int> cells = new();

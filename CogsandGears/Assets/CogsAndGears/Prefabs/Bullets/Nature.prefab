@@ -178,7 +178,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -237,7 +237,7 @@ MonoBehaviour:
   rb: {fileID: 5540033571994118366}
   col: {fileID: 4917772394658985875}
   lightSourse: {fileID: 7424674173892247715}
-  notDestroy: 1
+  notDestroy: 0
   lifeTime: 5
   detachedLifeTime: 1
 --- !u!1 &7182798495066343054

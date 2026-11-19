@@ -5,19 +5,58 @@ using UnityEngine.UI;
 public class InvenGrid : MonoBehaviour
 {
     [Header("Grid Settings")]
-    [SerializeField] private Vector2Int _gridSize = new(8, 4);
-    [SerializeField] private Vector2Int _initialUnlockPosition = new(2, 0);
-    [SerializeField] private Vector2Int _initialUnlockSize = new(3, 3);
+    [SerializeField] private Vector2Int _gridSize;
+    [SerializeField] private Vector2Int _initialUnlockPosition;
+    [SerializeField] private Vector2Int _initialUnlockSize;
 
+    [SerializeField] private InvenUI _invenUI;
+    
     [Header("Cell UI")]
     [SerializeField] private Color _unlockedColor = Color.white;
     [SerializeField] private Color _lockedColor = Color.gray;
 
+    [Header("Placement Preview")]
+    [SerializeField] private Color _validPreviewColor = Color.green;
+    [SerializeField] private Color _invalidPreviewColor = Color.red;
+    
+    [Header("Default Weapon")]
+    [SerializeField] private WeaponDataSO _defaultWeaponData;
+    [SerializeField] private Vector2Int _defaultWeaponPosition;
+    
+    
+
+    private readonly List<Vector2Int> _previewCells = new();
+    
     private bool[,] _unlockedCells;
     private InvenItem[,] _occupiedCells;
     private Image[,] _cellImages;
+    private GridLayoutGroup _gridLayoutGroup;
+    
+    public Vector2 CellSize => _gridLayoutGroup.cellSize;
+    public Vector2 Spacing => _gridLayoutGroup.spacing;
 
-    private void Awake() => InitializeGrid();
+    private void Awake()
+    {
+        CacheComponents();
+        InitializeGrid();
+        InitDefaultWeaponData();
+    }
+    
+    private void InitDefaultWeaponData()
+    {
+        if (_defaultWeaponData == null) return;
+
+        InvenItem item = new InvenItem(_defaultWeaponData);
+        
+        // 초기 점유 데이터 등록
+        foreach (Vector2Int cell in item.GetOccupiedCells())
+        {
+            Vector2Int position = _defaultWeaponPosition + cell;
+            _occupiedCells[position.x, position.y] = item;
+        }
+
+        _invenUI.CreateDefaultItem(item, _defaultWeaponPosition);
+    }
     
     private void InitializeGrid()
     {
@@ -36,7 +75,7 @@ public class InvenGrid : MonoBehaviour
             }
         }
 
-        // 초기 3×3 영역 해금
+        // 초기 4×4 영역 해금
         for (int y = 0; y < _initialUnlockSize.y; y++)
         {
             for (int x = 0; x < _initialUnlockSize.x; x++)
@@ -48,7 +87,6 @@ public class InvenGrid : MonoBehaviour
                     _unlockedCells[position.x, position.y] = true;
             }
         }
-
         RefreshGrid();
     }
 
@@ -72,10 +110,14 @@ public class InvenGrid : MonoBehaviour
             }
         }
     }
+    
      // 아이템 배치 가능 여부
      public bool CanPlace(InvenItem item, Vector2Int position)
      {
-         foreach (Vector2Int cell in item.GetOccupiedCells())
+         List<Vector2Int> occupiedCells = item.GetOccupiedCells();
+         if (occupiedCells.Count == 0) return false;
+         
+         foreach (Vector2Int cell in occupiedCells)
          {
              Vector2Int target = position + cell;
 
@@ -143,4 +185,112 @@ public class InvenGrid : MonoBehaviour
          return new List<InvenItem>(items);
      }
 
+     private void CacheComponents()
+     {
+         _gridLayoutGroup = GetComponent<GridLayoutGroup>();
+     }
+     
+     // 첫 번째 셀의 중심 좌표 (Grid 로컬 좌표)
+     private Vector2 GetFirstCellCenter()
+     {
+         RectTransform gridRect = (RectTransform)transform;
+         RectTransform cellRect = _cellImages[0, 0].rectTransform;
+
+         Vector3 worldCenter = cellRect.TransformPoint(cellRect.rect.center);
+
+         return gridRect.InverseTransformPoint(worldCenter);
+     }
+
+    // 마우스 화면 좌표 → 아이템 배치 시작 셀 좌표
+     public bool TryGetDropPosition(
+         Vector2 screenPosition,
+         Camera uiCamera,
+         InvenItem item,
+         out Vector2Int position)
+     {
+         position = default;
+
+         RectTransform gridRect = (RectTransform)transform;
+
+         if (!RectTransformUtility.RectangleContainsScreenPoint(
+                 gridRect, screenPosition, uiCamera))
+             return false;
+
+         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                 gridRect, screenPosition, uiCamera, out Vector2 local))
+             return false;
+
+         Vector2 first = GetFirstCellCenter();
+         Vector2Int size = item.RotatedSize();
+
+         float stepX = CellSize.x + Spacing.x;
+         float stepY = CellSize.y + Spacing.y;
+
+         // 드래그 아이콘의 중심을 기준으로 배치 시작 셀 계산
+         float offsetX = (size.x - 1) * stepX * 0.5f;
+         float offsetY = (size.y - 1) * stepY * 0.5f;
+
+         int x = Mathf.RoundToInt((local.x - first.x - offsetX) / stepX);
+         int y = Mathf.RoundToInt((first.y - local.y - offsetY) / stepY);
+
+         position = new Vector2Int(x, y);
+
+         return true;
+     }
+
+    // 배치 시작 셀 → 아이템 UI 중심의 월드 좌표
+     public Vector3 GetPlacementWorldPosition(
+         InvenItem item,
+         Vector2Int position)
+     {
+         RectTransform gridRect = (RectTransform)transform;
+
+         Vector2 first = GetFirstCellCenter();
+         Vector2Int size = item.RotatedSize();
+
+         float stepX = CellSize.x + Spacing.x;
+         float stepY = CellSize.y + Spacing.y;
+
+         float x = first.x +
+                   (position.x + (size.x - 1) * 0.5f) * stepX;
+
+         float y = first.y -
+                   (position.y + (size.y - 1) * 0.5f) * stepY;
+
+         return gridRect.TransformPoint(new Vector3(x, y, 0f));
+     }
+     
+     public void ShowPlacementPreview(InvenItem item, Vector2Int position)
+     {
+         ClearPlacementPreview();
+
+         bool canPlace = CanPlace(item, position);
+         Color previewColor = canPlace
+             ? _validPreviewColor
+             : _invalidPreviewColor;
+
+         foreach (Vector2Int cell in item.GetOccupiedCells())
+         {
+             Vector2Int target = position + cell;
+
+             if (!IsInside(target))
+                 continue;
+
+             _cellImages[target.x, target.y].color = previewColor;
+             _previewCells.Add(target);
+         }
+     }
+     
+     public void ClearPlacementPreview()
+     {
+         foreach (Vector2Int cell in _previewCells)
+         {
+             _cellImages[cell.x, cell.y].color =
+                 _unlockedCells[cell.x, cell.y]
+                     ? _unlockedColor
+                     : _lockedColor;
+         }
+
+         _previewCells.Clear();
+     }
 }
