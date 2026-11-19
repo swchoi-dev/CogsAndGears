@@ -41,18 +41,11 @@ public class InvenUI : MonoBehaviour
                 _invenGrid.Spacing
             );
 
-            itemUI.SetDragLayer(_itemLayer);
+            itemUI.SetUpDrag(_itemLayer, _invenGrid);
             
-            RectTransform slotRect = _slotPanels[i] as RectTransform;
             RectTransform itemRect = itemUI.GetComponent<RectTransform>();
 
             const float previewScale = 0.7f;
-            
-            // float scaleX = slotRect.rect.width / itemRect.rect.width;
-            // float scaleY = slotRect.rect.height / itemRect.rect.height;
-
-            // float scale = Mathf.Min(scaleX, scaleY) * 0.9f;
-
             itemRect.localScale = Vector3.one * previewScale;
             
             _candidateUIs.Add(itemUI);
@@ -63,7 +56,7 @@ public class InvenUI : MonoBehaviour
     {
         foreach (InvenItemUI itemUI in _candidateUIs)
         {
-            if (itemUI != null)
+            if (itemUI != null && !itemUI.IsPlaced)
                 Destroy(itemUI.gameObject);
         }
 

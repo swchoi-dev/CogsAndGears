@@ -159,4 +159,74 @@ public class InvenGrid : MonoBehaviour
      {
          _gridLayoutGroup = GetComponent<GridLayoutGroup>();
      }
+     
+     // 첫 번째 셀의 중심 좌표 (Grid 로컬 좌표)
+     private Vector2 GetFirstCellCenter()
+     {
+         RectTransform gridRect = (RectTransform)transform;
+         RectTransform cellRect = _cellImages[0, 0].rectTransform;
+
+         Vector3 worldCenter = cellRect.TransformPoint(cellRect.rect.center);
+
+         return gridRect.InverseTransformPoint(worldCenter);
+     }
+
+    // 마우스 화면 좌표 → 아이템 배치 시작 셀 좌표
+     public bool TryGetDropPosition(
+         Vector2 screenPosition,
+         Camera uiCamera,
+         InvenItem item,
+         out Vector2Int position)
+     {
+         position = default;
+
+         RectTransform gridRect = (RectTransform)transform;
+
+         if (!RectTransformUtility.RectangleContainsScreenPoint(
+                 gridRect, screenPosition, uiCamera))
+             return false;
+
+         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                 gridRect, screenPosition, uiCamera, out Vector2 local))
+             return false;
+
+         Vector2 first = GetFirstCellCenter();
+         Vector2Int size = item.RotatedSize();
+
+         float stepX = CellSize.x + Spacing.x;
+         float stepY = CellSize.y + Spacing.y;
+
+         // 드래그 아이콘의 중심을 기준으로 배치 시작 셀 계산
+         float offsetX = (size.x - 1) * stepX * 0.5f;
+         float offsetY = (size.y - 1) * stepY * 0.5f;
+
+         int x = Mathf.RoundToInt((local.x - first.x - offsetX) / stepX);
+         int y = Mathf.RoundToInt((first.y - local.y - offsetY) / stepY);
+
+         position = new Vector2Int(x, y);
+
+         return true;
+     }
+
+    // 배치 시작 셀 → 아이템 UI 중심의 월드 좌표
+     public Vector3 GetPlacementWorldPosition(
+         InvenItem item,
+         Vector2Int position)
+     {
+         RectTransform gridRect = (RectTransform)transform;
+
+         Vector2 first = GetFirstCellCenter();
+         Vector2Int size = item.RotatedSize();
+
+         float stepX = CellSize.x + Spacing.x;
+         float stepY = CellSize.y + Spacing.y;
+
+         float x = first.x +
+                   (position.x + (size.x - 1) * 0.5f) * stepX;
+
+         float y = first.y -
+                   (position.y + (size.y - 1) * 0.5f) * stepY;
+
+         return gridRect.TransformPoint(new Vector3(x, y, 0f));
+     }
 }

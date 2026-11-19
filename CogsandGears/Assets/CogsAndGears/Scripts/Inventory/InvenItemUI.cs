@@ -2,6 +2,7 @@ using System.Numerics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -11,6 +12,7 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private Image _iconImage;
     private RectTransform _rectTransform;
     private RectTransform _dragLayer;
+    private InvenGrid _invenGrid;
     private InvenItem _item;
     
     private bool _isDragging;
@@ -19,7 +21,12 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private Vector3 _originScale;
     private int _originSiblingIndex;
     
-    
+    private bool _isPlaced;
+    private bool _wasPlacedAtDragStart;
+    private Quaternion _origiRotation;
+    private int _rotationCount;
+
+    public bool IsPlaced => _isPlaced;
     public InvenItem Item => _item;
 
     private void Awake() => CacheComponents();
@@ -32,12 +39,14 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         {
             _item.Rotate();
             _rectTransform.Rotate(0f, 0f, -90f, Space.Self);
+            _rotationCount++;
         }
     }
     
-    public void SetDragLayer(RectTransform dragLayer)
+    public void SetUpDrag(RectTransform dragLayer, InvenGrid invenGrid)
     {
         _dragLayer = dragLayer;
+        _invenGrid = invenGrid;
     }
     
     public void Initialize(InvenItem item, Vector2 cellSize, Vector2 spacing)
@@ -68,6 +77,10 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         _originPosition = transform.position;
         _originScale = transform.localScale;
         _originSiblingIndex = transform.GetSiblingIndex();
+     
+        _wasPlacedAtDragStart = _isPlaced;
+        _origiRotation = _rectTransform.localRotation;
+        _rotationCount = 0;
         
         _isDragging = true;
         
@@ -89,14 +102,45 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!_isDragging) return;
+        _isDragging = false;
         
-        // Step 4-3 전까지는 원래 슬롯으로 복귀
+        bool isInsideGrid = _invenGrid.TryGetDropPosition(
+            eventData.position,
+            eventData.pressEventCamera,
+            _item,
+            out Vector2Int position
+        );
+
+        if (isInsideGrid && _invenGrid.TryPlace(_item, position))
+        {
+            // 배치 성공
+            _rectTransform.SetParent(_dragLayer, false);
+            _rectTransform.localScale = Vector3.one;
+
+            _rectTransform.position =
+                _invenGrid.GetPlacementWorldPosition(_item, position);
+
+            _isPlaced = true;
+            return;
+        }
+
+        // 기존에 배치된 아이템이라면 회전 상태 복원
+        if (_wasPlacedAtDragStart)
+        {
+            int undoCount = (4 - _rotationCount % 4) % 4;
+
+            for (int i = 0; i < undoCount; i++)
+                _item.Rotate();
+
+            _rectTransform.localRotation = _origiRotation;
+        }
+
+        // 배치 실패 → 원래 위치 복귀
         _rectTransform.SetParent(_originParent, false);
         _rectTransform.SetSiblingIndex(_originSiblingIndex);
+
         _rectTransform.position = _originPosition;
         _rectTransform.localScale = _originScale;
-        
-        _isDragging = false;
     }
 
     private void MoveToPointer(PointerEventData eventData)
