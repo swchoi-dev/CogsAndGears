@@ -51,6 +51,8 @@ public class PlayerAim : MonoBehaviour
     private void Update()
     {
         if (_playerDash.IsDashing) return;
+        if (GameFlowManager.Instance.FlowState != GameFlowState.PLAYING) return;
+        
         UpdateAim();
         UpdateFacing();
         UpdateAnimRig();

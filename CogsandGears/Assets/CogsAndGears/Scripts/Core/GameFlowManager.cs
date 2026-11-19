@@ -4,7 +4,7 @@ using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
+public class GameFlowManager : SingletonBehaviour<GameFlowManager>
 {
     private const int FIRST_STAGE = 0;
     [SerializeField] private List<StageController> _stages;
@@ -16,7 +16,9 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
     private StageController _currentStage;
     private StageController _prevStage;
     private int _currentStageIndex;
-
+    
+    public GameFlowState FlowState => _flowState;
+    
     public event Action<GameFlowState> ChangedState;
 
     private void Awake()
@@ -28,6 +30,8 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
     private void OnEnable()
     {
         _inventory.Confirmed += OnInvenConfirm;
+        _inventory.Opened += OnInvenOpen;
+        _inventory.Closed += OnInvenClose;
     }
     
     private void Start()
@@ -39,6 +43,8 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
     private void OnDisable()
     {
         _inventory.Confirmed -= OnInvenConfirm;
+        _inventory.Opened -= OnInvenOpen;
+        _inventory.Closed -= OnInvenClose;
     }
 
     private void OnDestroy()
@@ -95,6 +101,17 @@ public class GameFlowManager : SingletonBehaviour<MonoBehaviour>
 
         NextStage();
     }
+
+    private void OnInvenOpen()
+    {
+        ChangeFlowState(GameFlowState.INVENTORY);
+    }
+
+    private void OnInvenClose()
+    {
+        ChangeFlowState(GameFlowState.PLAYING);
+    }
+    
     
     private void StageClear()
     {

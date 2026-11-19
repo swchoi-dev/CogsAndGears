@@ -5,9 +5,9 @@ using UnityEngine.UI;
 public class InvenGrid : MonoBehaviour
 {
     [Header("Grid Settings")]
-    [SerializeField] private Vector2Int _gridSize = new(8, 4);
-    [SerializeField] private Vector2Int _initialUnlockPosition = new(2, 0);
-    [SerializeField] private Vector2Int _initialUnlockSize = new(3, 4);
+    [SerializeField] private Vector2Int _gridSize;
+    [SerializeField] private Vector2Int _initialUnlockPosition;
+    [SerializeField] private Vector2Int _initialUnlockSize;
 
     [Header("Cell UI")]
     [SerializeField] private Color _unlockedColor = Color.white;
@@ -16,8 +16,16 @@ public class InvenGrid : MonoBehaviour
     private bool[,] _unlockedCells;
     private InvenItem[,] _occupiedCells;
     private Image[,] _cellImages;
+    private GridLayoutGroup _gridLayoutGroup;
+    
+    public Vector2 CellSize => _gridLayoutGroup.cellSize;
+    public Vector2 Spacing => _gridLayoutGroup.spacing;
 
-    private void Awake() => InitializeGrid();
+    private void Awake()
+    {
+        CacheComponents();
+        InitializeGrid();
+    }
     
     private void InitializeGrid()
     {
@@ -36,7 +44,7 @@ public class InvenGrid : MonoBehaviour
             }
         }
 
-        // 초기 3×4 영역 해금
+        // 초기 4×4 영역 해금
         for (int y = 0; y < _initialUnlockSize.y; y++)
         {
             for (int x = 0; x < _initialUnlockSize.x; x++)
@@ -72,6 +80,7 @@ public class InvenGrid : MonoBehaviour
             }
         }
     }
+    
      // 아이템 배치 가능 여부
      public bool CanPlace(InvenItem item, Vector2Int position)
      {
@@ -146,4 +155,8 @@ public class InvenGrid : MonoBehaviour
          return new List<InvenItem>(items);
      }
 
+     private void CacheComponents()
+     {
+         _gridLayoutGroup = GetComponent<GridLayoutGroup>();
+     }
 }
