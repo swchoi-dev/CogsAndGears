@@ -21,7 +21,7 @@ public class PlayerWeapon : MonoBehaviour
 
     private void OnEnable()
     {
-        InitWeaponData();
+        // InitWeaponData();
         
         foreach (var weapon in _weapons)
         {

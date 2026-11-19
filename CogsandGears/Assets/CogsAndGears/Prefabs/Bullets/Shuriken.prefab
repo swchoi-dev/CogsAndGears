@@ -19806,14 +19806,14 @@ MonoBehaviour:
   hitOffset: 0
   UseFirePointRotation: 0
   rotationOffset: {x: 0, y: 0, z: 0}
-  hit: {fileID: 0}
-  hitPS: {fileID: 0}
+  hit: {fileID: 6546924223047511634}
+  hitPS: {fileID: 6349745605335806802}
   flash: {fileID: 0}
-  projectilePS: {fileID: 0}
+  projectilePS: {fileID: 7975569253071311565}
   Detached: []
-  rb: {fileID: 0}
-  col: {fileID: 0}
-  lightSourse: {fileID: 0}
+  rb: {fileID: 3135991272767308775}
+  col: {fileID: 4027937817366883317}
+  lightSourse: {fileID: 4652194706728044221}
   notDestroy: 0
   lifeTime: 5
   detachedLifeTime: 1
@@ -19934,8 +19934,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4776bca22f3b439449b75f5931a27440, type: 3}
+--- !u!198 &6349745605335806802 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198381470925943048, guid: 4776bca22f3b439449b75f5931a27440, type: 3}
+  m_PrefabInstance: {fileID: 6547698506707763802}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6544189502013621278 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4425208806032964, guid: 4776bca22f3b439449b75f5931a27440, type: 3}
+  m_PrefabInstance: {fileID: 6547698506707763802}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6546924223047511634 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1479929942879240, guid: 4776bca22f3b439449b75f5931a27440, type: 3}
   m_PrefabInstance: {fileID: 6547698506707763802}
   m_PrefabAsset: {fileID: 0}

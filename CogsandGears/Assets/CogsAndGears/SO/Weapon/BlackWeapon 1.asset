@@ -13,8 +13,15 @@ MonoBehaviour:
   m_Name: BlackWeapon 1
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
   _itemName: BlackCannon
-  _icon: {fileID: 0}
-  _size: {x: 1, y: 1}
+  _icon: {fileID: 21300000, guid: 5115c16e74a159b4fa61641600f8bb16, type: 3}
+  _size: {x: 2, y: 3}
+  _occupiedCells:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 2}
+  - {x: 1, y: 2}
   _damage: 35
   _fireRate: 1
   _projectileSpeed: 5
