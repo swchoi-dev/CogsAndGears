@@ -7,7 +7,7 @@ public class StageController : MonoBehaviour
     [SerializeField] private List<MonsterSpawnData> _monsters;
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private BoxCollider2D _cameraBounds;
-
+    
     private float _elapsedTime;
     private int _spawnedMonsterCount;
     private int _aliveMonsterCount;
@@ -48,20 +48,29 @@ public class StageController : MonoBehaviour
     {
         foreach (var monster in _monsters)
         {
-            if (!monster.IsSpawned && _elapsedTime >= monster.SpawnTime)
+            if (monster.IsSpawned || _elapsedTime < monster.SpawnTime)
             {
-                monster.IsSpawned = true;
-                _aliveMonsterCount++;
-                _spawnedMonsterCount++;
-                
-                Instantiate(
-                    monster.Prefab,
-                    monster.SpawnPoint.position,
-                    monster.SpawnPoint.rotation,
-                    transform
-                    );
+                continue;
             }
+            
+            SpawnMonster(monster);
         }
+    }
+
+    private void SpawnMonster(MonsterSpawnData monster)
+    {
+        var instance = Instantiate(
+            monster.Prefab,
+            monster.SpawnPoint.position,
+            monster.SpawnPoint.rotation,
+            transform
+        );
+                
+        instance.GetComponent<Health>().OnDeath += OnMonsterDead;
+        
+        monster.IsSpawned = true;
+        _aliveMonsterCount++;
+        _spawnedMonsterCount++;
     }
     
     private void CheckStageClear()

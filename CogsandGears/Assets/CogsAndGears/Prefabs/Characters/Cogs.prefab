@@ -103,14 +103,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4972724849873922119}
-  - component: {fileID: 5015969989243954955}
-  - component: {fileID: 8386306011466372665}
+  - component: {fileID: 3585258792724626638}
+  - component: {fileID: 8396415524727385036}
   - component: {fileID: 6774468963535480454}
   - component: {fileID: 3199701320867618872}
   - component: {fileID: 5374175460108690201}
   - component: {fileID: 8565757649338394606}
   - component: {fileID: 2211422773010675228}
   - component: {fileID: 3075742087625699469}
+  - component: {fileID: -853729413155514124}
   m_Layer: 0
   m_Name: Cogs
   m_TagString: Untagged
@@ -134,43 +135,40 @@ Transform:
   - {fileID: 5025871713780278967}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &5015969989243954955
-Rigidbody2D:
-  serializedVersion: 5
+--- !u!54 &3585258792724626638
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3692533306584443682}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_Constraints: 112
   m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!70 &8386306011466372665
-CapsuleCollider2D:
+--- !u!136 &8396415524727385036
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3692533306584443682}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -179,25 +177,14 @@ CapsuleCollider2D:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.03}
-  m_Size: {x: 0.8, y: 2.1}
-  m_Direction: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.42, z: 0}
 --- !u!114 &6774468963535480454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +200,7 @@ MonoBehaviour:
   _moveAction: {fileID: 3573353440474072131, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _dashAction: {fileID: -6435662806929191593, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _modelRoot: {fileID: 5025871713780278967}
-  _moveSpeed: 3
+  _moveSpeed: 4
   _runThreshold: 2
   _acceleration: 2.5
   _deceleration: 5
@@ -236,8 +223,8 @@ MonoBehaviour:
   _armTarget: {fileID: 7130583211184807275}
   _handTarget: {fileID: 2110622891542350305}
   _turnSpeed: 540
-  _bodyRotateRange: 50
-  _armReach: 0.5
+  _bodyRotateRange: 25
+  _armReach: 0.7
   _handIKConstraint: {fileID: 3584668651485566872}
 --- !u!114 &5374175460108690201
 MonoBehaviour:
@@ -266,9 +253,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a971224bc45972a40883db227a47d0b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+  _isDontDestroyOnLoad: 0
   _moveInput: {fileID: 3573353440474072131, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _dashInput: {fileID: -6435662806929191593, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _fireInput: {fileID: 4747450005996122174, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
+  _rotateInput: {fileID: 3776217837354622403, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
 --- !u!114 &2211422773010675228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,7 +291,21 @@ MonoBehaviour:
   camAnim: {fileID: 0}
   _defaultData: {fileID: 11400000, guid: 0ed3e524ed033284c958be486fd10a87, type: 2}
   _muzzlePoint: {fileID: 1263609031176554255}
-  _weapons: []
+  _weapons:
+  - _data: {fileID: 11400000, guid: 0ed3e524ed033284c958be486fd10a87, type: 2}
+--- !u!114 &-853729413155514124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692533306584443682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f979ae5d0b12f2547b515bf3257d28a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  _stats: {fileID: 11400000, guid: 2d04300ea3ee2a2408ddf5f001c38ddd, type: 2}
 --- !u!1 &5239651137227234498
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,7 +588,7 @@ MonoBehaviour:
     m_Tip: {fileID: 773936479340803818}
     m_Target: {fileID: 2110622891542350305}
     m_Hint: {fileID: 4162814317230010568}
-    m_TargetPositionWeight: 0.75
+    m_TargetPositionWeight: 0.7
     m_TargetRotationWeight: 1
     m_HintWeight: 0.8
     m_MaintainTargetPositionOffset: 0
