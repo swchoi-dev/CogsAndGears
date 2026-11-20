@@ -33,7 +33,10 @@ public class InvenController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameFlowManager.Instance.ChangedState -= OnChangedState;
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.ChangedState -= OnChangedState;
+        }
     }
     
 

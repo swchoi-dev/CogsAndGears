@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MecahniGolem
   m_EditorClassIdentifier: Assembly-CSharp::StatDataSO
   _maxHealth: 400
-  _moveSpeed: 7
+  _moveSpeed: 1
   _turnSpeed: 540
   _damage: 30
-  _attackRate: 2
-  _attackRange: 10
+  _attackInterval: 3
+  _attackRange: 2

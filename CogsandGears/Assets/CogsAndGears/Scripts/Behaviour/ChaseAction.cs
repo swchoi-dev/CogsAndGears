@@ -10,26 +10,44 @@ public partial class ChaseAction : Action
 {
     [SerializeReference] public BlackboardVariable<GameObject> Target;
     [SerializeReference] public BlackboardVariable<float> Speed;
+    [SerializeReference] public BlackboardVariable<float> AttackRange;
+
+    private Rigidbody _rb;
 
     protected override Status OnStart()
     {
-        return Status.Running;
+        _rb = GameObject.GetComponent<Rigidbody>();
+
+        return _rb != null ? Status.Running : Status.Failure;
     }
 
     protected override Status OnUpdate()
     {
-        Transform selfTransform = GameObject.transform;
-        Transform targetTransform = Target.Value.transform;
-        Vector3 toTarget = targetTransform.position - selfTransform.position;
+        if (Target.Value == null)
+            return Status.Failure;
 
-        selfTransform.LookAt(targetTransform);
-        selfTransform.position += toTarget.normalized * Speed.Value * Time.deltaTime;
+        float deltaX =
+            Target.Value.transform.position.x - GameObject.transform.position.x;
+        
+        if (Mathf.Abs(deltaX) <= AttackRange.Value)
+        {
+            return Status.Success;
+        }
 
-        return Status.Success;
+        Vector3 velocity = _rb.linearVelocity;
+        velocity.x = Mathf.Sign(deltaX) * Speed.Value;
+        _rb.linearVelocity = velocity;
+
+        return Status.Running;
     }
 
     protected override void OnEnd()
     {
+        if (_rb == null) return;
+
+        Vector3 velocity = _rb.linearVelocity;
+        velocity.x = 0f;
+        _rb.linearVelocity = velocity;
     }
 }
 

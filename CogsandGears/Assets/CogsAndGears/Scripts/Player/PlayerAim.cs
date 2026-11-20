@@ -80,21 +80,13 @@ public class PlayerAim : MonoBehaviour
 
     private void UpdateFacing()
     {
-        if (Mathf.Abs(AimDirection.x) < MIN_FACING_THRESHOLD)
-            return;
-
-        FacingDirection = Mathf.Sign(AimDirection.x);
-
-        Quaternion targetRotation = Quaternion.Euler(
-            0f,
-            FacingDirection > 0f ?  DEFAULT_MODEL_ROTATION_ANGLE + 90f : DEFAULT_MODEL_ROTATION_ANGLE + 180f,
-            0f
-        );
-        
-        _modelRoot.rotation = Quaternion.RotateTowards(
-            _modelRoot.rotation,
-            targetRotation,
-            _turnSpeed * Time.deltaTime
+        FacingUtility.RotateTowardsX(
+            _modelRoot,
+            AimDirection.x,
+            Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE + 90f, 0f),
+            Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE + 180f, 0f),
+            _turnSpeed,
+            false
         );
     }
 
