@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _acceleration = 2.5f;
     [SerializeField] private float _deceleration = 5f;
     
-    private Rigidbody2D _rigidbody;
+    private Rigidbody _rigidbody;
     private PlayerAim _playerAim;
     private PlayerAnimHandler _playerAnim;
     private PlayerDash _playerDash;
@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void CacheComponents()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidbody = GetComponent<Rigidbody>();
         _playerAim = GetComponent<PlayerAim>();
         _playerAnim = GetComponent<PlayerAnimHandler>();
         _playerDash = GetComponent<PlayerDash>();

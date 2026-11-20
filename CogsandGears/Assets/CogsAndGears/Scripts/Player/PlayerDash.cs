@@ -12,7 +12,7 @@ public class PlayerDash : MonoBehaviour
     
     private PlayerMovement _playerMovement;
     private PlayerAim _playerAim;
-    private Rigidbody2D _rigidbody2D;
+    private Rigidbody _rigidbody;
     
     private float _dashDirection;
     private bool _isDashRequested;
@@ -45,7 +45,7 @@ public class PlayerDash : MonoBehaviour
         if (_isDashRequested)
         {
             float dashAmount = PlayerInputHandler.Instance.MoveX == 0 ? _dashForce + _playerMovement.MoveSpeed : _dashForce;
-            _rigidbody2D.AddForce(Vector2.right * (_dashDirection * dashAmount), ForceMode2D.Impulse);
+            _rigidbody.AddForce(Vector2.right * (_dashDirection * dashAmount), ForceMode.Impulse);
             _isDashRequested = false;
         }
     }
@@ -107,6 +107,6 @@ public class PlayerDash : MonoBehaviour
     {
         _playerMovement = GetComponent<PlayerMovement>();
         _playerAim = GetComponent<PlayerAim>();
-        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 }
