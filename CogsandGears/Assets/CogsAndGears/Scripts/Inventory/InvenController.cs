@@ -27,14 +27,13 @@ public class InvenController : MonoBehaviour
     
     private void OnEnable()
     {
-        _invenAction.action.Enable();
-        _invenAction.action.performed += OnInvenPerformed;
+        GameFlowManager.Instance.ChangedState += OnChangedState;
+        
     }
 
     private void OnDisable()
     {
-        _invenAction.action.performed -= OnInvenPerformed;
-        _invenAction.action.Disable();
+        GameFlowManager.Instance.ChangedState -= OnChangedState;
     }
     
 
@@ -64,16 +63,13 @@ public class InvenController : MonoBehaviour
         }
     }
     
-
-    private void OnInvenPerformed(InputAction.CallbackContext context)
+    private void OnChangedState(GameFlowState state)
     {
-        if (_invenUI.gameObject.activeSelf)
+        switch (state)
         {
-            CloseInven();
-        }
-        else
-        {
-            OpenInven();
+            case GameFlowState.STAGE_CLEAR:
+                OpenInven();
+                break;
         }
     }
 
