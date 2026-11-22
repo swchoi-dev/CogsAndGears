@@ -17,6 +17,8 @@ public class PlayerWeapon : MonoBehaviour
     private WeaponRuntime _defaultWeapon;
 
     public WeaponDataSO DefaultData => _defaultData;
+    // 현재 발사 대상 무기 목록(읽기 전용). 인벤토리 동기화에 사용한다.
+    public IReadOnlyList<WeaponRuntime> Weapons => _weapons;
     private void Awake() => CacheComponents();
 
     private void OnEnable()

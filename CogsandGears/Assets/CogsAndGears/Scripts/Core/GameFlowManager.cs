@@ -19,6 +19,8 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     
     public GameFlowState FlowState => _flowState;
     public StageController CurrentStage => _currentStage;
+    // 0부터 시작하는 현재 Stage 순번(0 = Stage 1)
+    public int CurrentStageIndex => _currentStageIndex;
     
     public event Action<GameFlowState> ChangedState;
     // 새 Stage가 시작되면 호출된다. HUD가 대상 Stage를 교체하는 데 사용한다.

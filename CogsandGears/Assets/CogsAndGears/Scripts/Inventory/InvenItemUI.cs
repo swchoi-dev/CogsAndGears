@@ -13,6 +13,7 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private RectTransform _rectTransform;
     private RectTransform _dragLayer;
     private InvenGrid _invenGrid;
+    private InvenUI _owner;
     private InvenItem _item;
     
     private bool _isDragging;
@@ -29,6 +30,12 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public bool IsPlaced => _isPlaced;
     public InvenItem Item => _item;
+    // 이번 보상 후보(아직 확정 전)인지. 확정되면 일반 소유 무기가 된다
+    public bool IsCandidate { get; private set; }
+    // DiscardZone에 놓여 있는지(최종 Confirm 전까지 복구 가능)
+    public bool IsDiscarded { get; private set; }
+    public bool WasPlacedAtDragStart => _wasPlacedAtDragStart;
+    public Transform OriginParent => _originParent;
 
     private void Awake() => CacheComponents();
 
@@ -48,10 +55,12 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         
     }
     
-    public void SetupDrag(RectTransform dragLayer, InvenGrid invenGrid)
+    // owner(InvenUI)가 있으면 드래그 시작 가능 여부·그리드 배치 허용·버리기/후보 반환을 owner의 규칙에 맡긴다
+    public void SetupDrag(RectTransform dragLayer, InvenGrid invenGrid, InvenUI owner = null)
     {
         _dragLayer = dragLayer;
         _invenGrid = invenGrid;
+        _owner = owner;
     }
     
     public void Initialize(InvenItem item, Vector2 cellSize, Vector2 spacing)
@@ -77,6 +86,7 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (_dragLayer == null) return;
+        if (_owner != null && !_owner.CanBeginDrag(this)) return;
         _isDragging = true;
         
         _lastDragEventData = eventData;
@@ -123,7 +133,9 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             out Vector2Int position
         );
 
-        if (isInsideGrid && _invenGrid.TryPlace(_item, position))
+        bool placementAllowed = _owner == null || _owner.CanPlaceInGrid(this);
+
+        if (isInsideGrid && placementAllowed && _invenGrid.TryPlace(_item, position))
         {
             // 배치 성공
             _rectTransform.SetParent(_dragLayer, false);
@@ -133,19 +145,22 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
                 _invenGrid.GetPlacementWorldPosition(_item, position);
 
             _isPlaced = true;
+            IsDiscarded = false;
+            _owner?.OnItemPlaced(this);
             return;
         }
 
-        // 기존에 배치된 아이템이라면 회전 상태 복원
-        if (_wasPlacedAtDragStart)
-        {
-            int undoCount = (4 - _rotationCount % 4) % 4;
+        // 그리드 밖: DiscardZone 버리기 또는 후보 슬롯 반환을 owner가 처리
+        if (_owner != null && _owner.TryHandleDrop(this, eventData))
+            return;
 
-            for (int i = 0; i < undoCount; i++)
-                _item.Rotate();
+        // 실패 시 회전 상태 복원 (배치·후보·버림 상태 모두 드래그 전 회전으로 되돌린다)
+        int undoCount = (4 - _rotationCount % 4) % 4;
 
-            _rectTransform.localRotation = _origiRotation;
-        }
+        for (int i = 0; i < undoCount; i++)
+            _item.Rotate();
+
+        _rectTransform.localRotation = _origiRotation;
 
         // 배치 실패 → 원래 위치 복귀
         _rectTransform.SetParent(_originParent, false);
@@ -187,5 +202,32 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void SetPlaced(bool placed)
     {
         _isPlaced = placed;
+    }
+
+    public void SetCandidate(bool candidate)
+    {
+        IsCandidate = candidate;
+    }
+
+    public void SetDiscarded(bool discarded)
+    {
+        IsDiscarded = discarded;
+    }
+
+    // 다른 후보가 선택돼 고를 수 없을 때 흐리게 표시한다
+    public void SetSelectable(bool selectable)
+    {
+        _iconImage.color = selectable ? Color.white : new Color(1f, 1f, 1f, 0.3f);
+    }
+
+    // 컨테이너(후보 슬롯·DiscardZone) 중앙에 지정 배율로 놓는다. 회전은 유지한다.
+    public void MoveToContainer(Transform container, float scale)
+    {
+        _rectTransform.SetParent(container, false);
+        _rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        _rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        _rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        _rectTransform.anchoredPosition = Vector2.zero;
+        _rectTransform.localScale = Vector3.one * scale;
     }
 }

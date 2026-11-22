@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1806976266581567144}
   - component: {fileID: 5295712661661508624}
   - component: {fileID: 1914642886247877331}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SubSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4860,7 +4860,7 @@ GameObject:
   - component: {fileID: 2505256726570435783}
   - component: {fileID: 1498375984904917787}
   - component: {fileID: 131465382893512272}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9771,7 +9771,7 @@ GameObject:
   - component: {fileID: 4905986225201828921}
   - component: {fileID: 7636785043633332792}
   - component: {fileID: 5744676653066160552}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SubSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14619,7 +14619,7 @@ GameObject:
   - component: {fileID: 791121838310301148}
   - component: {fileID: 1399329696388063204}
   - component: {fileID: 4282958637126037119}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19525,7 +19525,7 @@ GameObject:
   - component: {fileID: 7163179572467609588}
   - component: {fileID: 5891842040797137460}
   - component: {fileID: 895636807419446552}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LightningSp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24438,7 +24438,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 27383415694729965}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24474,7 +24474,7 @@ GameObject:
   - component: {fileID: 8458411479992547984}
   - component: {fileID: 8156423933467016042}
   - component: {fileID: 3516582087021533813}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CenterGlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29326,7 +29326,7 @@ GameObject:
   - component: {fileID: 6545901882822320887}
   - component: {fileID: 7241023234650893002}
   - component: {fileID: 594228032887122965}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Darkness
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34178,7 +34178,7 @@ GameObject:
   - component: {fileID: 4468320203597433467}
   - component: {fileID: 2182880695013598128}
   - component: {fileID: 1635487634397436009}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39094,7 +39094,7 @@ GameObject:
   - component: {fileID: 354956154438209083}
   - component: {fileID: 341242937027832804}
   - component: {fileID: 5139663578574135052}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39200,9 +39200,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 27383415694729965}
     m_Modifications:
+    - target: {fileID: 1218259589559336, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246325360556328, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1437805998423164, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1514330825910556, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1683167112156914, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1765570899365652, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
       propertyPath: m_Name
       value: Hit 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 1765570899365652, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1918563772670028, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1919695837272008, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4279857972633504, guid: e90b0a20dc997ef4c9e67b1c8b6db6c9, type: 3}
       propertyPath: m_RootOrder
