@@ -2677,8 +2677,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHitFeedback
   _playerHealth: {fileID: 3974719472233344748}
   _cameraShake: {fileID: 1587369127}
-  _slowTimeScale: 0.35
-  _slowDurationRealtime: 0.12
+  _hitStopTimeScale: 0.05
+  _hitStopDuration: 0.06
+  _slowTimeScale: 0.3
+  _slowDuration: 0.18
+  _recoverDuration: 0.05
+  _retriggerCooldown: 0.35
 --- !u!1 &763602361
 GameObject:
   m_ObjectHideFlags: 0
@@ -6137,9 +6141,9 @@ Animation:
   m_GameObject: {fileID: 1587369125}
   m_Enabled: 0
   serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: c5667a58aeddeb64b92537173886fc86, type: 2}
+  m_Animation: {fileID: 7400000, guid: ba3176a6f131845b780f04b423974831, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: c5667a58aeddeb64b92537173886fc86, type: 2}
+  - {fileID: 7400000, guid: ba3176a6f131845b780f04b423974831, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
