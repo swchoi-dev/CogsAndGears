@@ -14,10 +14,17 @@ public class StageController : MonoBehaviour
     private int _aliveMonsterCount;
     private bool _isRunning;
     private bool _isCleared;
+    private readonly List<MonsterController> _aliveMonsters = new List<MonsterController>();
 
     public event Action Cleared;
+    // 남은 몬스터 수(RemainingMonsterCount)가 바뀌면 호출된다. HUD 표시용.
+    public event Action RemainingMonsterCountChanged;
     public Transform PlayerSpawnPoint => _playerSpawnPoint;
     public BoxCollider2D CameraBounds => _cameraBounds;
+    // 스폰되어 아직 살아 있는 몬스터. HUD 위치 표시용 읽기 전용 목록.
+    public IReadOnlyList<MonsterController> AliveMonsters => _aliveMonsters;
+    // 살아 있는 몬스터 + 아직 스폰되지 않은 몬스터 = 전체 - 처치 수
+    public int RemainingMonsterCount => _monsters.Count - (_spawnedMonsterCount - _aliveMonsterCount);
 
     private void Update()
     {
@@ -28,9 +35,11 @@ public class StageController : MonoBehaviour
         TryMonsterSpawn();
     }
 
-    private void OnMonsterDead()
+    private void OnMonsterDead(MonsterController monster)
     {
+        _aliveMonsters.Remove(monster);
         _aliveMonsterCount--;
+        RemainingMonsterCountChanged?.Invoke();
         
         CheckStageClear();
     }
@@ -40,9 +49,12 @@ public class StageController : MonoBehaviour
         _elapsedTime = 0f;
         _spawnedMonsterCount = 0;
         _aliveMonsterCount = 0;
+        _aliveMonsters.Clear();
         
         _isRunning = true;
         _isCleared = false;
+
+        RemainingMonsterCountChanged?.Invoke();
     }
 
     private void TryMonsterSpawn()
@@ -67,8 +79,11 @@ public class StageController : MonoBehaviour
             transform
         );
         
-        instance.GetComponent<Health>().OnDeath += OnMonsterDead;
-        instance.GetComponent<MonsterController>().Initialize(_playerTarget);
+        var controller = instance.GetComponent<MonsterController>();
+        // Health.OnDeath는 몬스터당 한 번만 호출되므로 중복 집계되지 않는다
+        instance.GetComponent<Health>().OnDeath += () => OnMonsterDead(controller);
+        controller.Initialize(_playerTarget);
+        _aliveMonsters.Add(controller);
         
         monster.IsSpawned = true;
         _aliveMonsterCount++;

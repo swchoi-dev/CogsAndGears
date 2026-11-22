@@ -18,8 +18,11 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     private int _currentStageIndex;
     
     public GameFlowState FlowState => _flowState;
+    public StageController CurrentStage => _currentStage;
     
     public event Action<GameFlowState> ChangedState;
+    // 새 Stage가 시작되면 호출된다. HUD가 대상 Stage를 교체하는 데 사용한다.
+    public event Action<StageController> StageStarted;
 
     private void Awake()
     {
@@ -75,6 +78,7 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
         
         _currentStage.Cleared += StageClear;
         _currentStage.StartStage();
+        StageStarted?.Invoke(_currentStage);
         
         ChangeFlowState(GameFlowState.PLAYING);
     }
