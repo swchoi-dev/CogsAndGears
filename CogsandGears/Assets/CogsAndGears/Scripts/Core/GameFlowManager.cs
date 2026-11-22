@@ -16,6 +16,7 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     private StageController _currentStage;
     private StageController _prevStage;
     private int _currentStageIndex;
+    private Health _playerHealth;
     
     public GameFlowState FlowState => _flowState;
     public StageController CurrentStage => _currentStage;
@@ -29,6 +30,7 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     private void Awake()
     {
         GameManager.Instance.RegisterFlowManager(this);
+        _playerHealth = _cogs.GetComponent<Health>();
     }
     
     
@@ -37,6 +39,9 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
         _inventory.Confirmed += OnInvenConfirm;
         _inventory.Opened += OnInvenOpen;
         _inventory.Closed += OnInvenClose;
+
+        if (_playerHealth != null)
+            _playerHealth.OnDeath += GameOver;
     }
     
     private void Start()
@@ -50,6 +55,9 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
         _inventory.Confirmed -= OnInvenConfirm;
         _inventory.Opened -= OnInvenOpen;
         _inventory.Closed -= OnInvenClose;
+
+        if (_playerHealth != null)
+            _playerHealth.OnDeath -= GameOver;
     }
 
     private void OnDestroy()
@@ -60,6 +68,9 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     
     private void InitGameRun()
     {
+        // 새 Run에서는 이전 결과 스냅샷을 쓰지 않는다
+        RunResult.Clear();
+
         // 첫 Stage만 활성화되도록 모든 Stage를 끈 상태에서 시작한다(StartStage가 현재 Stage를 켠다)
         foreach (var stage in _stages)
         {
@@ -141,12 +152,61 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
 
     private void GameClear()
     {
+        if (IsRunEnded) return;
+
+        SaveRunResult(true);
         ChangeFlowState(GameFlowState.GAME_CLEAR);
     }
 
+    // 플레이어 Health.OnDeath에서 호출된다. 이미 종료된 Run이면 무시한다(중복 처리 방지).
     private void GameOver()
     {
+        if (IsRunEnded) return;
+
+        SaveRunResult(false);
         ChangeFlowState(GameFlowState.GAME_OVER);
+    }
+
+    private bool IsRunEnded =>
+        _flowState == GameFlowState.GAME_CLEAR || _flowState == GameFlowState.GAME_OVER;
+
+    // 지금까지 진행한 모든 Stage의 처치 수 합계(각 Stage는 Run 동안 한 번만 진행된다)
+    public int TotalKilledMonsters
+    {
+        get
+        {
+            int total = 0;
+            for (int i = 0; i <= _currentStageIndex && i < _stages.Count; i++)
+                total += _stages[i].KilledMonsterCount;
+
+            return total;
+        }
+    }
+
+    // 종료 순간의 결과를 스냅샷으로 보관한다. 결과 화면은 이 값만 읽는다.
+    private void SaveRunResult(bool isClear)
+    {
+        RunResult.Save(new RunResult(
+            isClear,
+            _currentStageIndex + 1,
+            TotalKilledMonsters,
+            _inventory.CaptureInventoryLayout()));
+    }
+
+    // PLAYING에서만 정지한다(인벤토리 정비·종료·전환 중에는 무시). 시간 정지는 GameManager가 상태 변경으로 처리한다.
+    public bool Pause()
+    {
+        if (_flowState != GameFlowState.PLAYING) return false;
+
+        ChangeFlowState(GameFlowState.GAME_PAUSE);
+        return true;
+    }
+
+    public void Resume()
+    {
+        if (_flowState != GameFlowState.GAME_PAUSE) return;
+
+        ChangeFlowState(GameFlowState.PLAYING);
     }
     
     private void ChangeFlowState(GameFlowState flowState)

@@ -25,6 +25,8 @@ public class StageController : MonoBehaviour
     public IReadOnlyList<MonsterController> AliveMonsters => _aliveMonsters;
     // 살아 있는 몬스터 + 아직 스폰되지 않은 몬스터 = 전체 - 처치 수
     public int RemainingMonsterCount => _monsters.Count - (_spawnedMonsterCount - _aliveMonsterCount);
+    // 이 Stage에서 처치한 몬스터 수(스폰 수 - 생존 수)
+    public int KilledMonsterCount => _spawnedMonsterCount - _aliveMonsterCount;
 
     private void Update()
     {

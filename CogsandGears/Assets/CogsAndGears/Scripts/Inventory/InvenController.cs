@@ -172,6 +172,31 @@ public class InvenController : MonoBehaviour
         Closed?.Invoke();
     }
 
+    // ---------- 일시정지 중 읽기 전용 가방 ----------
+
+    public bool IsReadOnlyOpen => _invenUI.gameObject.activeSelf && _invenUI.IsReadOnly;
+
+    // 정비 중(Expansion/Reward)이면 열지 않는다. 후보 생성·확장·Opened 이벤트 없이 현재 가방만 보여 준다.
+    public bool OpenReadOnly()
+    {
+        if (_invenUI.gameObject.activeSelf) return false;
+
+        _invenUI.gameObject.SetActive(true);
+        RegisterDefaultWeapon();
+        _invenUI.ShowReadOnly();
+        return true;
+    }
+
+    public void CloseReadOnly()
+    {
+        if (!IsReadOnlyOpen) return;
+
+        _invenUI.HideReadOnly();
+        _invenUI.gameObject.SetActive(false);
+    }
+
+    public InventoryLayout CaptureInventoryLayout() => _invenGrid.CaptureLayout();
+
     // Reward Confirm(최종): 인벤토리에 무기가 1개 이상일 때만 확정하고 다음 Stage로 진행한다
     public void ConfirmInven()
     {

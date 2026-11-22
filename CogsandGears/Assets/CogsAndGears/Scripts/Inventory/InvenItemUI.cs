@@ -7,7 +7,8 @@ using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 [RequireComponent(typeof(Image))]
-public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,
+    IPointerEnterHandler, IPointerExitHandler
 {
     private Image _iconImage;
     private RectTransform _rectTransform;
@@ -65,6 +66,9 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     
     public void Initialize(InvenItem item, Vector2 cellSize, Vector2 spacing)
     {
+        // 비활성 부모 아래에서 생성되면 Awake가 아직 실행되지 않았을 수 있다
+        if (_iconImage == null) CacheComponents();
+
         _item = item;
 
         _iconImage.sprite = item.ItemData.Icon;
@@ -83,8 +87,15 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         _rectTransform = GetComponent<RectTransform>();
     }
 
+    public void OnPointerEnter(PointerEventData eventData) => _owner?.OnItemPointerEnter(this);
+
+    public void OnPointerExit(PointerEventData eventData) => _owner?.OnItemPointerExit(this);
+
     public void OnBeginDrag(PointerEventData eventData)
     {
+        // 드래그를 시도하면 툴팁은 즉시 숨긴다(드래그가 막힌 후보도 포함)
+        _owner?.OnItemDragStarted();
+
         if (_dragLayer == null) return;
         if (_owner != null && !_owner.CanBeginDrag(this)) return;
         _isDragging = true;
@@ -125,6 +136,7 @@ public class InvenItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         _lastDragEventData = null;
         _isDragging = false;
         _invenGrid.ClearPlacementPreview();
+        _owner?.OnItemDragEnded();
         
         bool isInsideGrid = _invenGrid.TryGetDropPosition(
             eventData.position,
