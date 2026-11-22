@@ -37,6 +37,10 @@ public class Health : MonoBehaviour, IDamageable
     {
         _currentHp = _stats.MaxHealth;
         _currentShield = _maxShield;
+
+        // 초기값을 구독자(HUD·HP 바)에 알린다
+        OnHpChanged?.Invoke(_currentHp);
+        OnShieldChanged?.Invoke(_currentShield);
     }
 
     private void Update()
