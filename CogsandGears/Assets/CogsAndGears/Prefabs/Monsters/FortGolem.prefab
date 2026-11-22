@@ -129,6 +129,7 @@ MonoBehaviour:
   _maxJumpDistance: 5
   _landingAttackRadius: 2
   _groundNormalMinY: 0.7
+  _telegraphPrefab: {fileID: 6901061734438084190, guid: a764c632fc50e4fb7a3c8a4e0a9269c4, type: 3}
 --- !u!114 &4357463758045013359
 MonoBehaviour:
   m_ObjectHideFlags: 0

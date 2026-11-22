@@ -160,6 +160,7 @@ MonoBehaviour:
   _maxJumpDistance: 5
   _landingAttackRadius: 2
   _groundNormalMinY: 0.7
+  _telegraphPrefab: {fileID: 0}
 --- !u!114 &2751536663405494053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +225,12 @@ MonoBehaviour:
   _muzzlePoint: {fileID: 2214195152683620743}
   _projectilePrefab: {fileID: -1582990983545478000, guid: 8f9d1dd868ca04975a3d49293648c191, type: 3}
   _projectileSpeed: 10
+  _telegraphPrefab: {fileID: 6901061734438084190, guid: a764c632fc50e4fb7a3c8a4e0a9269c4, type: 3}
+  _telegraphWidth: 1.2
+  _telegraphMaxDistance: 50
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1001 &1809182970441596761
 PrefabInstance:
   m_ObjectHideFlags: 0

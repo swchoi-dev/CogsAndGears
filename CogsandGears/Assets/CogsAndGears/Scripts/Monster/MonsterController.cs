@@ -32,6 +32,8 @@ public class MonsterController : MonoBehaviour
     [SerializeField] private float _landingAttackRadius = 2f;
     [Tooltip("접촉 법선의 Y값이 이 값 이상이어야 지면 착지로 판정한다 (벽 충돌 제외)")]
     [SerializeField] private float _groundNormalMinY = 0.7f;
+    [Tooltip("착지 예상 지점 경고. 폭은 착지 피해 반경(_landingAttackRadius × 2)")]
+    [SerializeField] private AttackTelegraph _telegraphPrefab;
     
     private Transform _target;
     private Health _health;
@@ -47,6 +49,7 @@ public class MonsterController : MonoBehaviour
     private float _attackStartTime;
     private float _takeoffTime;
     private float _nextAttackTime;
+    private AttackTelegraph _landingTelegraph;
     
     // 공격 트리거부터 JumpAttack 애니메이션 종료까지 true. 이 동안 ChaseAction은 Rigidbody를 제어하지 않는다.
     public bool IsJumpAttacking { get; private set; }
@@ -75,6 +78,8 @@ public class MonsterController : MonoBehaviour
     private void OnDisable()
     {
         _health.OnDeath -= Die;
+        // 사망(Destroy)·비활성화 시 착지 경고를 남기지 않는다
+        HideLandingTelegraph();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -151,7 +156,8 @@ public class MonsterController : MonoBehaviour
             -_maxJumpDistance,
             _maxJumpDistance
         );
-        float deltaY = GetTargetFootY() - footY;
+        float targetFootY = GetTargetFootY();
+        float deltaY = targetFootY - footY;
 
         // 수평: 등속 / 수직: y = vy*t + 0.5*g*t^2 를 t = duration 에서 deltaY 가 되도록 역산
         float velocityX = deltaX / duration;
@@ -167,6 +173,27 @@ public class MonsterController : MonoBehaviour
         _isAirborne = true;
         _takeoffTime = Time.time;
         _rb.AddForce(velocityChange, ForceMode.VelocityChange);
+
+        // 점프 계산과 같은 목표값(deltaX, targetFootY)으로 착지 예상 지점을 표시한다
+        ShowLandingTelegraph(new Vector3(_rb.position.x + deltaX, targetFootY, _rb.position.z));
+    }
+
+    private void ShowLandingTelegraph(Vector3 landingPoint)
+    {
+        HideLandingTelegraph();
+
+        if (_telegraphPrefab == null) return;
+
+        _landingTelegraph = Instantiate(_telegraphPrefab, transform.parent);
+        _landingTelegraph.Show(landingPoint, _landingAttackRadius * 2f);
+    }
+
+    private void HideLandingTelegraph()
+    {
+        if (_landingTelegraph == null) return;
+
+        _landingTelegraph.Hide();
+        _landingTelegraph = null;
     }
 
     private float GetTargetFootY()
@@ -200,6 +227,8 @@ public class MonsterController : MonoBehaviour
     private void Land(bool applyDamage)
     {
         _isAirborne = false;
+        // 착지·타임아웃(applyDamage=false) 모두 경고를 제거한다
+        HideLandingTelegraph();
         _nextAttackTime = Time.time + _stats.AttackInterval;
 
         Vector3 velocity = _rb.linearVelocity;

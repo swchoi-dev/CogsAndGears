@@ -25,6 +25,15 @@ public class DroneController : MonoBehaviour
     [SerializeField] private Projectile _projectilePrefab;
     [SerializeField] private float _projectileSpeed = 10f;
 
+    [Header("Attack Telegraph")]
+    [SerializeField] private AttackTelegraph _telegraphPrefab;
+    [Tooltip("예상 탄착 지점 경고 범위(폭)")]
+    [SerializeField] private float _telegraphWidth = 1.2f;
+    [Tooltip("탄착 예측 최대 거리. 탄환 속도 × 수명(10 × 5초) 이내로 둔다")]
+    [SerializeField] private float _telegraphMaxDistance = 50f;
+    [Tooltip("경고 마커를 올릴 바닥 레이어")]
+    [SerializeField] private LayerMask _groundMask = 1;
+
     private Rigidbody _rb;
     private MonsterAnimHandler _animHandler;
     private MonsterController _monster;
@@ -138,6 +147,39 @@ public class DroneController : MonoBehaviour
             Owner = gameObject,
         });
         projectile.Launch();
+
+        ShowImpactTelegraph(projectile, origin, direction.normalized);
+    }
+
+    // 발사 순간의 경로로 탄착 지점을 예측해 그 아래 바닥에 경고를 표시한다. 이후 플레이어가 움직여도 따라가지 않는다.
+    // 탄환과 같은 충돌 레이어(Collision Matrix)로 직선 경로를 검사하므로 벽·바닥에 먼저 닿는 경우도 반영된다.
+    private void ShowImpactTelegraph(Projectile projectile, Vector3 origin, Vector3 direction)
+    {
+        if (_telegraphPrefab == null || !(projectile is Bullet bullet)) return;
+
+        int collisionMask = GetCollisionMask(projectile.gameObject.layer);
+        Vector3 impact = Physics.Raycast(origin, direction, out RaycastHit hit, _telegraphMaxDistance, collisionMask, QueryTriggerInteraction.Ignore)
+            ? hit.point
+            : origin + direction * _telegraphMaxDistance;
+
+        if (!AttackTelegraph.TryFindGround(impact, _groundMask, 0.1f, out Vector3 groundPoint)) return;
+
+        AttackTelegraph telegraph = Instantiate(_telegraphPrefab, transform.parent);
+        telegraph.Show(groundPoint, _telegraphWidth);
+        bullet.Finished += telegraph.Hide;
+    }
+
+    // Collision Matrix에서 layer와 충돌하는 레이어 마스크
+    private static int GetCollisionMask(int layer)
+    {
+        int mask = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            if (!Physics.GetIgnoreLayerCollision(layer, i))
+                mask |= 1 << i;
+        }
+
+        return mask;
     }
 
     // 현재 있는 쪽과 수평 거리를 최대한 유지하는 사격 위치.
