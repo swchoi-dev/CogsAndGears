@@ -127,7 +127,7 @@ MonoBehaviour:
   _rightFacingAngle: 135
   _leftFacingAngle: 225
   _defaultFacingRight: 1
-  _jumpDuration: 1.3
+  _jumpDuration: 0.87
   _maxJumpDistance: 5
   _landingAttackRadius: 2
   _groundNormalMinY: 0.7
