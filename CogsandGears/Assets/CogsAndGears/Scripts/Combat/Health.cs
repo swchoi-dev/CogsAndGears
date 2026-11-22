@@ -22,6 +22,8 @@ public class Health : MonoBehaviour, IDamageable
     public event Action OnDeath;
     public event Action<float> OnHpChanged;
     public event Action<float> OnShieldChanged;
+    // 실드 또는 HP에 실제로 피해가 적용됐을 때만 호출된다(재충전·초기화 제외). 피격 피드백용.
+    public event Action<float> OnDamaged;
 
     private bool _isDead;
     private float _currentShield;
@@ -65,13 +67,15 @@ public class Health : MonoBehaviour, IDamageable
             OnShieldChanged?.Invoke(_currentShield);
         }
 
-        if (remaining <= 0f) return;
+        if (remaining > 0f)
+        {
+            _currentHp = Mathf.Clamp(_currentHp - remaining, 0, _stats.MaxHealth);
+            OnHpChanged?.Invoke(_currentHp);
+        }
 
-        _currentHp = Mathf.Clamp(_currentHp - remaining, 0, _stats.MaxHealth);
+        OnDamaged?.Invoke(damage);
 
-        OnHpChanged?.Invoke(_currentHp);
-
-        if (_currentHp > 0) return;
+        if (remaining <= 0f || _currentHp > 0) return;
 
         _isDead = true;
         OnDeath?.Invoke();
