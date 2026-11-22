@@ -112,6 +112,8 @@ GameObject:
   - component: {fileID: 2211422773010675228}
   - component: {fileID: 3075742087625699469}
   - component: {fileID: -853729413155514124}
+  - component: {fileID: 1201474727396024471}
+  - component: {fileID: 3009707689073534993}
   m_Layer: 0
   m_Name: Cogs
   m_TagString: Untagged
@@ -275,6 +277,7 @@ MonoBehaviour:
   _reChargeDuration: 3
   _maxDashCount: 1
   _modelRoot: {fileID: 5025871713780278967}
+  _invulnerableWhileDashing: 1
 --- !u!114 &3075742087625699469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +310,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Health
   _stats: {fileID: 11400000, guid: 2d04300ea3ee2a2408ddf5f001c38ddd, type: 2}
   _currentHp: 0
+  _maxShield: 0
+  _shieldRechargeDelay: 0
+  _shieldRechargePerSecond: 0
+--- !u!114 &1201474727396024471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692533306584443682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72a3e9e7770e4c6ab13a452f6458f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitFlash
+  _health: {fileID: 0}
+  _renderers: []
+  _flashColor: {r: 1.6, g: 0.15, b: 0.15, a: 1}
+  _flashDuration: 0.12
+--- !u!114 &3009707689073534993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3692533306584443682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eb28d9a86d8447c1b6d2bfdbc865ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageNumberEmitter
+  _health: {fileID: 0}
+  _color: {r: 1, g: 0.32, b: 0.28, a: 1}
+  _offset: {x: 0, y: 0.2, z: 0}
 --- !u!1 &5239651137227234498
 GameObject:
   m_ObjectHideFlags: 0

@@ -47,6 +47,8 @@ GameObject:
   - component: {fileID: 140838600258715721}
   - component: {fileID: 5513859461437885140}
   - component: {fileID: 1539351712333597774}
+  - component: {fileID: 7368396166951850018}
+  - component: {fileID: 6305036262307178105}
   m_Layer: 7
   m_Name: MechGolem
   m_TagString: Untagged
@@ -215,6 +217,37 @@ MonoBehaviour:
   _animator: {fileID: 7474706313026717965}
   _moveThreshold: 0.1
   _includeVerticalSpeed: 0
+--- !u!114 &7368396166951850018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8809881112932396789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72a3e9e7770e4c6ab13a452f6458f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitFlash
+  _health: {fileID: 0}
+  _renderers: []
+  _flashColor: {r: 1.6, g: 0.15, b: 0.15, a: 1}
+  _flashDuration: 0.12
+--- !u!114 &6305036262307178105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8809881112932396789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eb28d9a86d8447c1b6d2bfdbc865ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageNumberEmitter
+  _health: {fileID: 0}
+  _color: {r: 1, g: 0.93, b: 0.55, a: 1}
+  _offset: {x: 0, y: 0.2, z: 0}
 --- !u!1001 &5735698338706938224
 PrefabInstance:
   m_ObjectHideFlags: 0
