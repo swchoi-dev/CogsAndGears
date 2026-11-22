@@ -46,6 +46,19 @@ public class StageController : MonoBehaviour
 
     public void StartStage()
     {
+        // 같은 Stage를 다시 시작해도 처음부터 스폰되도록, 남아 있던 몬스터를 정리하고 스폰 상태를 초기화한다.
+        // (Destroy는 사망이 아니므로 처치 집계·Cleared에 영향을 주지 않는다)
+        foreach (var alive in _aliveMonsters)
+        {
+            if (alive != null)
+                Destroy(alive.gameObject);
+        }
+
+        foreach (var monster in _monsters)
+        {
+            monster.IsSpawned = false;
+        }
+
         _elapsedTime = 0f;
         _spawnedMonsterCount = 0;
         _aliveMonsterCount = 0;

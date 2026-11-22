@@ -159,10 +159,15 @@ MonoBehaviour:
   _rightFacingAngle: 135
   _leftFacingAngle: 225
   _defaultFacingRight: 1
-  _jumpDuration: 0.8
+  _jumpDuration: 0.87
+  _jumpHeight: 2
   _maxJumpDistance: 5
   _landingAttackRadius: 2
   _groundNormalMinY: 0.7
+  _groundFeetDuringJumpAttack: 1
+  _footBoneHeight: 0.16
+  _footOffsetSpeed: 10
+  _maxFootOffset: 1
   _telegraphPrefab: {fileID: 6901061734438084190, guid: a764c632fc50e4fb7a3c8a4e0a9269c4, type: 3}
 --- !u!114 &5513859461437885140
 MonoBehaviour:

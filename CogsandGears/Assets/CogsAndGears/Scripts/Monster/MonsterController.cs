@@ -13,6 +13,8 @@ public class MonsterController : MonoBehaviour
     private const float ATTACK_START_GRACE_SECONDS = 0.5f;
     // 예정 체공 시간을 이만큼 넘겨도 착지하지 못하면 피해 없이 점프를 종료한다
     private const float AIRBORNE_TIMEOUT_EXTRA_SECONDS = 1f;
+    // 정점은 도약·착지 지점 중 높은 쪽보다 최소 이만큼 위에 둔다
+    private const float MIN_JUMP_APEX_MARGIN = 0.1f;
     
     [SerializeField] private StatDataSO _stats;
     [SerializeField] private BehaviorGraphAgent _agent;
@@ -27,11 +29,22 @@ public class MonsterController : MonoBehaviour
     [Header("Jump Attack")]
     [Tooltip("도약부터 착지까지의 체공 시간(초). JumpAttack 클립의 도약→착지 이벤트 간격과 맞춘다.")]
     [SerializeField] private float _jumpDuration = 1.3f;
+    [Tooltip("도약 지점(발) 기준 정점 높이. 체공 시간(_jumpDuration)은 유지하고 점프 중 유효 중력을 바꿔 맞춘다")]
+    [SerializeField] private float _jumpHeight = 1.8f;
     [SerializeField] private float _maxJumpDistance = 5f;
     [Tooltip("착지 지점(발 위치)으로부터 XY 평면에서 피해를 주는 반경")]
     [SerializeField] private float _landingAttackRadius = 2f;
     [Tooltip("접촉 법선의 Y값이 이 값 이상이어야 지면 착지로 판정한다 (벽 충돌 제외)")]
     [SerializeField] private float _groundNormalMinY = 0.7f;
+
+    [Header("Jump Attack Foot Grounding")]
+    [Tooltip("JumpAttack 중 지면에 있을 때(준비·착지 자세) 발이 바닥에 닿도록 ModelRoot의 보이는 높이만 보정한다")]
+    [SerializeField] private bool _groundFeetDuringJumpAttack = true;
+    [Tooltip("Idle 자세에서 발 본(발목)이 Collider 바닥보다 높은 거리. 모델마다 다르다")]
+    [SerializeField] private float _footBoneHeight = 0.06f;
+    [Tooltip("보정량이 목표값을 따라가는 속도(유닛/초). 도약·복귀 시 튀지 않도록 부드럽게 바꾼다")]
+    [SerializeField] private float _footOffsetSpeed = 10f;
+    [SerializeField] private float _maxFootOffset = 1f;
     [Tooltip("착지 예상 지점 경고. 폭은 착지 피해 반경(_landingAttackRadius × 2)")]
     [SerializeField] private AttackTelegraph _telegraphPrefab;
     
@@ -50,6 +63,16 @@ public class MonsterController : MonoBehaviour
     private float _takeoffTime;
     private float _nextAttackTime;
     private AttackTelegraph _landingTelegraph;
+    // 점프 중 Physics.gravity에 더할 추가 수직 가속도(정점 높이·체공 시간을 맞추기 위한 유효 중력 보정)
+    private float _jumpExtraGravity;
+    // JumpAttack 시작 시 확정한 바라볼 방향(X 부호). 공격이 끝날 때까지 플레이어를 따라 돌지 않는다
+    private float _lockedFacingX;
+    private Vector3 _modelRootBaseLocalPosition;
+    private float _footOffset;
+    // 착지 프레임에는 보정을 즉시 적용해 접지 순간 발이 바로 땅에 닿게 한다
+    private bool _snapFootOffset;
+    private Transform _leftFoot;
+    private Transform _rightFoot;
     
     // 공격 트리거부터 JumpAttack 애니메이션 종료까지 true. 이 동안 ChaseAction은 Rigidbody를 제어하지 않는다.
     public bool IsJumpAttacking { get; private set; }
@@ -70,9 +93,16 @@ public class MonsterController : MonoBehaviour
         UpdateJumpAttackState();
     }
     
+    private void FixedUpdate()
+    {
+        if (_isAirborne && _jumpExtraGravity != 0f)
+            _rb.AddForce(Vector3.up * _jumpExtraGravity, ForceMode.Acceleration);
+    }
+
     private void LateUpdate()
     {
         UpdateFacing();
+        UpdateFootGrounding();
     }
 
     private void OnDisable()
@@ -97,7 +127,10 @@ public class MonsterController : MonoBehaviour
         if (_target == null || _modelRoot == null)
             return;
 
-        float directionX = _target.position.x - transform.position.x;
+        // 점프 공격 중(준비~착지~종료)에는 시작 시 확정한 방향을 유지한다
+        float directionX = IsJumpAttacking
+            ? _lockedFacingX
+            : _target.position.x - transform.position.x;
 
         Quaternion rightRotation = Quaternion.Euler(0f, _rightFacingAngle, 0f);
         Quaternion leftRotation = Quaternion.Euler(0f, _leftFacingAngle, 0f);
@@ -129,6 +162,7 @@ public class MonsterController : MonoBehaviour
         IsJumpAttacking = true;
         _hasTakenOff = false;
         _isAirborne = false;
+        _lockedFacingX = _target.position.x - transform.position.x;
         _attackStartTime = Time.time;
 
         _animHandler.PlayJumpAttack();
@@ -159,9 +193,15 @@ public class MonsterController : MonoBehaviour
         float targetFootY = GetTargetFootY();
         float deltaY = targetFootY - footY;
 
-        // 수평: 등속 / 수직: y = vy*t + 0.5*g*t^2 를 t = duration 에서 deltaY 가 되도록 역산
+        // 수평: 등속. 수직: 정점 높이 apex와 체공 시간 duration을 동시에 만족하는 유효 중력 a와 초기 속도 vy를 구한다.
+        //   apex = vy^2 / (2a),  deltaY = vy*T - 0.5*a*T^2  →  sqrt(a) = (sqrt(2*apex) + sqrt(2*(apex - deltaY))) / T
+        // 실제 중력과의 차이는 체공 중 FixedUpdate에서 추가 가속도로 더한다.
         float velocityX = deltaX / duration;
-        float velocityY = (deltaY - 0.5f * Physics.gravity.y * duration * duration) / duration;
+        float apex = Mathf.Max(_jumpHeight, Mathf.Max(0f, deltaY) + MIN_JUMP_APEX_MARGIN);
+        float sqrtGravity = (Mathf.Sqrt(2f * apex) + Mathf.Sqrt(2f * (apex - deltaY))) / duration;
+        float effectiveGravity = sqrtGravity * sqrtGravity;
+        float velocityY = Mathf.Sqrt(2f * effectiveGravity * apex);
+        _jumpExtraGravity = -effectiveGravity - Physics.gravity.y;
 
         Vector3 currentVelocity = _rb.linearVelocity;
         Vector3 velocityChange = new Vector3(
@@ -227,6 +267,8 @@ public class MonsterController : MonoBehaviour
     private void Land(bool applyDamage)
     {
         _isAirborne = false;
+        _jumpExtraGravity = 0f;
+        _snapFootOffset = true;
         // 착지·타임아웃(applyDamage=false) 모두 경고를 제거한다
         HideLandingTelegraph();
         _nextAttackTime = Time.time + _stats.AttackInterval;
@@ -259,6 +301,30 @@ public class MonsterController : MonoBehaviour
 
         if (_target.TryGetComponent(out IDamageable damageable))
             damageable.TakeDamage(_stats.Damage);
+    }
+
+    // JumpAttack 중 지면에 있는 동안 가장 낮은 발이 Collider 바닥(지면) + _footBoneHeight에 오도록 ModelRoot를 위아래로 옮긴다.
+    // 준비·착지 자세는 원래 몸 전체가 내려앉는 동작인데, 클립의 Root Y를 버리면서(물리 점프와 이중 적용 방지)
+    // 몸이 내려가지 않아 발이 뜨는 것을 보정한다. 공중·평상시에는 보정을 0으로 되돌린다. Collider·Rigidbody는 건드리지 않는다.
+    private void UpdateFootGrounding()
+    {
+        if (!_groundFeetDuringJumpAttack || _leftFoot == null || _rightFoot == null)
+            return;
+
+        float targetOffset = 0f;
+
+        if (IsJumpAttacking && !_isAirborne)
+        {
+            float lowestFoot = Mathf.Min(_leftFoot.position.y, _rightFoot.position.y);
+            float desiredFoot = _collider.bounds.min.y + _footBoneHeight;
+            targetOffset = Mathf.Clamp(_footOffset + (desiredFoot - lowestFoot), -_maxFootOffset, _maxFootOffset);
+        }
+
+        _footOffset = _snapFootOffset
+            ? targetOffset
+            : Mathf.MoveTowards(_footOffset, targetOffset, _footOffsetSpeed * Time.deltaTime);
+        _snapFootOffset = false;
+        _modelRoot.localPosition = _modelRootBaseLocalPosition + Vector3.up * _footOffset;
     }
 
     private void UpdateJumpAttackState()
@@ -311,6 +377,17 @@ public class MonsterController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
         _animHandler = GetComponent<MonsterAnimHandler>();
+
+        if (_modelRoot != null)
+            _modelRootBaseLocalPosition = _modelRoot.localPosition;
+
+        // 발 접지 보정은 Humanoid 모델(Golem)에서만 동작한다
+        Animator animator = GetComponentInChildren<Animator>();
+        if (animator != null && animator.isHuman)
+        {
+            _leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+            _rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
+        }
     }
     
 }
