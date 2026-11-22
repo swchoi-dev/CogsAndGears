@@ -63,3 +63,17 @@
 - 사용자 전역 설정(`~/.claude/settings.json`)의 `PermissionRequest` HTTP hook(Clawd on Desk)이 승인 요청을 처리할 수 있다. 해당 앱에서의 승인도 동일하게 취급한다.
 - 사용자 전역 `autoMode.environment`는 다른 프로젝트(Fourbeat) 기준으로 작성되어 있다. auto 모드 분류기가 이 프로젝트를 다른 저장소로 인식할 수 있다.
 - Unity MCP 서버는 현재 미설정이다. `mcp__unity*` 차단은 예비 규칙이며, 서버를 추가하면 실제 서버 이름을 `deny`에 등록한다.
+
+## 권한 복구 (2026-11-22)
+개발 일정상 Claude Code가 구현을 직접 수행하도록 역할 제한을 해제했다.
+
+- `cg-role-boundary.md`: 개발 관리 에이전트 → 개발 에이전트. C#·에셋 수정, Unity 플러그인·CLI 사용, 브랜치·Commit 허용. Push·PR 생성은 승인 후, Merge는 개발자.
+- `CLAUDE.md`, `git-workflow.md`, `github-issue-workflow.md`: 구현·Git 주체 관련 문구만 위 기준으로 수정. 브리핑·승인 절차는 유지.
+- `settings.json`
+  - 제거: `CogsandGears/**`·`*.cs`·`*.unity`·`*.prefab`·`*.asset`·`*.mat`·`*.meta` 쓰기 차단, `mcp__unity*`·`unity` CLI 차단
+  - 제거: `Write(...)` deny 규칙 전체. 파일 쓰기 권한은 `Edit(...)` 규칙으로 판정되어 `Write(...)` 규칙은 매칭되지 않음(`Deny rule Write(...) never matches · use Edit(...)` 경고의 원인)
+  - 추가 allow: `Edit(/CogsandGears/Assets/**)`, `Edit(/docs/**)`, `unity` CLI, 로컬 Git(add·commit·switch·checkout·restore·mv·rm·stash·branch·fetch·`pull --ff-only`)
+  - 유지 deny: 강제 Push, `reset --hard`, `clean`, `branch -D`, `gh pr merge`, Issue·저장소 삭제. 추가 deny: 인증정보(`~/.ssh`, `~/.aws`, `~/.config/gh`, `~/.unity/env*`, `.env`) 읽기·쓰기, `Library/`·`Temp/` 쓰기
+  - ask 유지: Push, `reset`, `merge`, `rebase`, PR·Issue·라벨 쓰기, `gh api -X`
+  - Unity 공식 플러그인 `unity@unity-agent-plugin` 프로젝트 범위 활성화 + `extraKnownMarketplaces` 등록
+- Unity 연동은 MCP 서버가 아니라 플러그인 Skill + Unity CLI(`~/.unity/bin/unity`) + `com.unity.pipeline` 패키지(1.0.1, Editor 내 HTTP 서버)로 동작한다. 별도 Unity MCP 서버는 설치하지 않았다.

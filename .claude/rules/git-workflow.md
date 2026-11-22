@@ -1,6 +1,6 @@
 # Git 브랜치 및 커밋 정책
 
-> **브랜치 생성, Commit, Push, PR, Merge는 개발자가 직접 수행한다.** Claude Code는 이 정책을 기준으로 브랜치명·커밋 메시지·PR 본문을 제안하고, 변경 사항을 읽기 전용으로 점검한다. 명시적 요청과 승인 없이는 Git 쓰기 작업을 하지 않는다(`cg-role-boundary.md`).
+> Claude Code는 이 정책에 따라 브랜치 생성과 Commit을 수행한다. Push와 PR 생성은 승인 후 수행하고, **Merge는 개발자가 수행한다**(`cg-role-boundary.md`).
 
 ## 1. 브랜치 역할
 | 브랜치 | 역할 |
@@ -72,7 +72,7 @@ develop
 - 기능 PR: `feature/<번호>-<기능명>` → `develop`
 - 릴리스 PR: `develop` → `prod`
 - PR 본문에 Issue, 변경사항, 주요 파일, 검증 결과, 미검증 항목, 위험/리뷰 포인트를 기재한다.
-- PR 생성과 병합은 개발자가 수행한다. Claude Code는 요청 시 PR 제목·본문 초안만 작성한다.
+- PR 생성은 승인 후 Claude Code가 수행할 수 있다. 병합은 개발자가 수행한다.
 
 ### 5.1 PR 제목
 PR 제목은 Merge commit 제목으로 그대로 사용된다(5.2). 개별 커밋 메시지(4장)와 역할을 구분한다.
