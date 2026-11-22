@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6178429341449456386}
   - component: {fileID: 4713253203180258515}
   - component: {fileID: 2635745023747467689}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Acid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 8562324855904272570}
   - component: {fileID: 4750683547257013429}
   - component: {fileID: 8636489246972874407}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5073,7 +5073,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2431510614932989562}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5110,7 +5110,7 @@ GameObject:
   - component: {fileID: 4459205638814682954}
   - component: {fileID: 7366831676586564619}
   - component: {fileID: 6699985096341531064}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SmokeHQ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9967,7 +9967,7 @@ GameObject:
   - component: {fileID: 7051531734657300343}
   - component: {fileID: 4205004780211077549}
   - component: {fileID: 758372849524972030}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14870,9 +14870,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2431510614932989562}
     m_Modifications:
+    - target: {fileID: 1087115499315760, guid: 56bde4ce6c483884084a4ff8b76b3267, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1351939137292810, guid: 56bde4ce6c483884084a4ff8b76b3267, type: 3}
       propertyPath: m_Name
       value: Flash 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351939137292810, guid: 56bde4ce6c483884084a4ff8b76b3267, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4844425560330192, guid: 56bde4ce6c483884084a4ff8b76b3267, type: 3}
       propertyPath: m_RootOrder
@@ -14956,6 +14964,30 @@ PrefabInstance:
     - target: {fileID: 1098451438589226, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
       propertyPath: m_Name
       value: Hit 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1098451438589226, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1119903112256510, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1346932672162150, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1575539856770380, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1679608744076704, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935910787797676, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4053675420230590, guid: afa1163e40fd2904fbf38e4c00924127, type: 3}
       propertyPath: m_RootOrder
