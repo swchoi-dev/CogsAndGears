@@ -14,11 +14,30 @@ public class PlayerInputHandler : SingletonBehaviour<PlayerInputHandler>
     private bool _isDashPressed;
     private bool _isFirePressed;
     private bool _isRotatePressed;
-    
-    public float MoveX => _moveX;
-    public Vector2 MoveVector => _moveVector2;
-    public bool IsDashPressed => _dashInput.action.WasPressedThisFrame();
-    public bool IsFirePressed => _isFirePressed;
+    // 정지·인벤토리 중 눌린 발사(예: 재개 버튼 클릭)가 재개 직후 발사로 이어지지 않도록, 한 번 뗄 때까지 무시한다
+    private bool _waitFireRelease;
+
+    // 전투 조작(이동·대시·발사)은 PLAYING에서만 허용한다. 회전(인벤토리용)은 제한하지 않는다.
+    private bool CanControl =>
+        GameFlowManager.Instance == null || GameFlowManager.Instance.FlowState == GameFlowState.PLAYING;
+
+    public float MoveX => CanControl ? _moveX : 0f;
+    public Vector2 MoveVector => CanControl ? _moveVector2 : Vector2.zero;
+    public bool IsDashPressed => CanControl && _dashInput.action.WasPressedThisFrame();
+
+    public bool IsFirePressed
+    {
+        get
+        {
+            if (!CanControl)
+            {
+                if (_isFirePressed) _waitFireRelease = true;
+                return false;
+            }
+
+            return _isFirePressed && !_waitFireRelease;
+        }
+    }
     public bool ISRotatePressed => _rotateInput.action.WasPressedThisFrame();
     
     private void OnEnable()
@@ -55,5 +74,11 @@ public class PlayerInputHandler : SingletonBehaviour<PlayerInputHandler>
         _moveX = _moveVector2.x;
     }
     
-    private void OnFire(InputAction.CallbackContext context) => _isFirePressed = context.performed;
+    private void OnFire(InputAction.CallbackContext context)
+    {
+        _isFirePressed = context.performed;
+
+        if (!_isFirePressed)
+            _waitFireRelease = false;
+    }
 }

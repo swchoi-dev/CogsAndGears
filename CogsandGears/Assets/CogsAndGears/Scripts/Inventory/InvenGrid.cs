@@ -47,6 +47,8 @@ public class InvenGrid : MonoBehaviour, IPointerClickHandler
     private bool _isExpanding;
     private int _expansionLimit;
     private InvenItem _defaultItem;
+    // 배치된 아이템의 시작 셀(결과 스냅샷용)
+    private readonly Dictionary<InvenItem, Vector2Int> _placements = new();
     
     private bool[,] _unlockedCells;
     private InvenItem[,] _occupiedCells;
@@ -67,9 +69,32 @@ public class InvenGrid : MonoBehaviour, IPointerClickHandler
 
     private void Awake()
     {
+        EnsureInitialized();
+    }
+
+    // 인벤토리 창을 한 번도 열지 않았어도(그리드 비활성) 결과 스냅샷을 만들 수 있도록 초기화를 보장한다
+    private void EnsureInitialized()
+    {
+        if (_unlockedCells != null) return;
+
         CacheComponents();
         InitializeGrid();
         InitDefaultWeaponData();
+    }
+
+    // 현재 격자 활성 상태와 배치 무기(시작 셀·회전)를 복사한다. DiscardZone·후보 슬롯의 무기는 포함되지 않는다.
+    public InventoryLayout CaptureLayout()
+    {
+        EnsureInitialized();
+
+        var items = new List<PlacedItemRecord>();
+        foreach (InvenItem item in GetPlacedItems())
+        {
+            if (_placements.TryGetValue(item, out Vector2Int position))
+                items.Add(new PlacedItemRecord(item.ItemData, position, item.Rotation));
+        }
+
+        return new InventoryLayout(_gridSize, _unlockedCells, items);
     }
     
     private void InitDefaultWeaponData()
@@ -86,6 +111,7 @@ public class InvenGrid : MonoBehaviour, IPointerClickHandler
             _occupiedCells[position.x, position.y] = item;
         }
 
+        _placements[item] = _defaultWeaponPosition;
         _invenUI.CreateDefaultItem(item, _defaultWeaponPosition);
     }
     
@@ -342,12 +368,15 @@ public class InvenGrid : MonoBehaviour, IPointerClickHandler
              _occupiedCells[target.x, target.y] = item;
          }
 
+         _placements[item] = position;
          return true;
      }
 
      // 아이템 배치 해제
      public void Remove(InvenItem item)
      {
+         _placements.Remove(item);
+
          for (int y = 0; y < _gridSize.y; y++)
          {
              for (int x = 0; x < _gridSize.x; x++)

@@ -40,12 +40,22 @@ public class InvenUI : MonoBehaviour
     [SerializeField] private float _discardItemScale = 0.5f;
     [SerializeField] private float _discardItemSpacing = 12f;
 
+    [Header("Read Only (Pause)")]
+    [Tooltip("일시정지 중 가방 보기에서 표시하는 레이어(제목·뒤로 버튼)")]
+    [SerializeField] private GameObject _readOnlyLayer;
+
+    [Header("Tooltip")]
+    [SerializeField] private ItemTooltipUI _tooltip;
+
     private const float CandidatePreviewScale = 0.7f;
 
     private readonly List<InvenItemUI> _candidateUIs = new();
     private readonly List<InvenItemUI> _discardedUIs = new();
+    private bool _isDraggingItem;
 
     public InventoryPhase Phase { get; private set; } = InventoryPhase.Reward;
+    // 일시정지 중 가방 보기. 드래그·회전·버리기·확장·확정을 모두 막는다
+    public bool IsReadOnly { get; private set; }
 
     // 인벤토리에 배치된 후보(이번 보상으로 선택한 무기). 최대 1개
     public InvenItemUI SelectedCandidate => _candidateUIs.Find(ui => ui != null && ui.IsPlaced);
@@ -61,10 +71,34 @@ public class InvenUI : MonoBehaviour
     private void OnDisable()
     {
         _invenGrid.ExpansionChanged -= RefreshExpansionUI;
+        HideTooltip();
+    }
+
+    public void ShowReadOnly()
+    {
+        IsReadOnly = true;
+        _expansionLayer.SetActive(false);
+        _rewardLayer.SetActive(false);
+        SetReadOnlyLayer(true);
+        HideTooltip();
+    }
+
+    public void HideReadOnly()
+    {
+        IsReadOnly = false;
+        SetReadOnlyLayer(false);
+    }
+
+    private void SetReadOnlyLayer(bool active)
+    {
+        if (_readOnlyLayer != null)
+            _readOnlyLayer.SetActive(active);
     }
 
     public void ShowExpansionPhase()
     {
+        HideReadOnly();
+        HideTooltip();
         Phase = InventoryPhase.Expansion;
         _expansionLayer.SetActive(true);
         _rewardLayer.SetActive(false);
@@ -73,6 +107,8 @@ public class InvenUI : MonoBehaviour
 
     public void ShowRewardPhase()
     {
+        HideReadOnly();
+        HideTooltip();
         Phase = InventoryPhase.Reward;
         _expansionLayer.SetActive(false);
         _rewardLayer.SetActive(true);
@@ -139,7 +175,7 @@ public class InvenUI : MonoBehaviour
     // 확장 Phase에서는 모든 드래그 금지. 보상 Phase에서 다른 후보가 이미 선택돼 있으면 나머지 후보는 드래그 불가.
     public bool CanBeginDrag(InvenItemUI itemUI)
     {
-        if (Phase != InventoryPhase.Reward) return false;
+        if (IsReadOnly || Phase != InventoryPhase.Reward) return false;
         if (!itemUI.IsCandidate || itemUI.IsPlaced) return true;
 
         InvenItemUI selected = SelectedCandidate;
@@ -149,7 +185,7 @@ public class InvenUI : MonoBehaviour
     // 실제 배치 단계에서도 후보 1개 제한을 다시 검증한다(UI 비활성화만으로 막지 않음)
     public bool CanPlaceInGrid(InvenItemUI itemUI)
     {
-        if (Phase != InventoryPhase.Reward) return false;
+        if (IsReadOnly || Phase != InventoryPhase.Reward) return false;
         if (!itemUI.IsCandidate) return true;
 
         InvenItemUI selected = SelectedCandidate;
@@ -168,7 +204,7 @@ public class InvenUI : MonoBehaviour
     // 그리드 밖에 놓았을 때: 기존 무기 → DiscardZone, 배치된 후보 → 원래 후보 슬롯(선택 취소). 처리하면 true.
     public bool TryHandleDrop(InvenItemUI itemUI, PointerEventData eventData)
     {
-        if (Phase != InventoryPhase.Reward) return false;
+        if (IsReadOnly || Phase != InventoryPhase.Reward) return false;
 
         Camera eventCamera = eventData.pressEventCamera;
 
@@ -206,12 +242,48 @@ public class InvenUI : MonoBehaviour
         return false;
     }
 
+    // ---------- 후보 툴팁 (InvenItemUI가 호출) ----------
+
+    // 보상 Phase의 후보에만 표시한다. 선택 불가(흐림) 후보도 정보는 볼 수 있다. 드래그 중에는 표시하지 않는다.
+    public void OnItemPointerEnter(InvenItemUI itemUI)
+    {
+        if (_tooltip == null || _isDraggingItem) return;
+        if (IsReadOnly || Phase != InventoryPhase.Reward || !itemUI.IsCandidate) return;
+
+        _tooltip.Show(itemUI.Item.ItemData);
+    }
+
+    public void OnItemPointerExit(InvenItemUI itemUI)
+    {
+        if (_tooltip != null && _tooltip.Current == itemUI.Item.ItemData)
+            _tooltip.Hide();
+    }
+
+    public void OnItemDragStarted()
+    {
+        _isDraggingItem = true;
+        HideTooltip();
+    }
+
+    public void OnItemDragEnded()
+    {
+        _isDraggingItem = false;
+    }
+
+    private void HideTooltip()
+    {
+        if (_tooltip != null)
+            _tooltip.Hide();
+    }
+
     // ---------- 최종 확정 ----------
 
     // 보상 확정: 버린 무기·선택하지 않은 후보 UI를 제거하고, 선택한 후보를 일반 소유 무기로 전환한다.
     // (실제 장착 무기 갱신은 InvenController.SyncPlayerWeapons가 그리드 배치 기준으로 처리)
     public void FinalizeReward()
     {
+        HideTooltip();
+
         foreach (InvenItemUI discarded in _discardedUIs)
         {
             if (discarded != null)
