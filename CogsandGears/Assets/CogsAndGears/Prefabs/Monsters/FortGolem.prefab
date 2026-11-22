@@ -84,9 +84,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1
+  m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.56, z: 0}
 --- !u!114 &3623644775059803829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +115,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterController
   _stats: {fileID: 11400000, guid: 920c7895867c089449f9a8d216f328f7, type: 2}
   _agent: {fileID: 4357463758045013359}
-  _target: {fileID: 4972724849873922119, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
   _modelRoot: {fileID: 6463761793952063838}
   _turnSpeed: 540
   _defaultFacingRight: 1

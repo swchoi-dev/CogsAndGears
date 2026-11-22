@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class MonsterController : MonoBehaviour
 {
+    private const float DEFAULT_MODEL_ROTATION_ANGLE = 45f;
+    
     [SerializeField] private StatDataSO _stats;
     [SerializeField] private BehaviorGraphAgent _agent;
     [SerializeField] private Transform _modelRoot;
@@ -42,27 +44,22 @@ public class MonsterController : MonoBehaviour
 
         float directionX = _target.position.x - transform.position.x;
 
-        Quaternion reverseRotation =
-            _defaultRotation * Quaternion.Euler(0f, 180f, 0f);
+        Quaternion rightRotation = Quaternion.Euler(
+            0f, DEFAULT_MODEL_ROTATION_ANGLE + 90f, 0f
+        );
+
+        Quaternion leftRotation = Quaternion.Euler(
+            0f, DEFAULT_MODEL_ROTATION_ANGLE + 180f, 0f
+        );
 
         FacingUtility.RotateTowardsX(
             _modelRoot,
             directionX,
-            _defaultFacingRight ? _defaultRotation : reverseRotation,
-            _defaultFacingRight ? reverseRotation : _defaultRotation,
-            _turnSpeed
-        );
-        
-        /*
-         * FacingUtility.RotateTowardsX(
-            _modelRoot,
-            AimDirection.x,
-            Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE + 90f, 0f),
-            Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE + 180f, 0f),
+            rightRotation,
+            leftRotation,
             _turnSpeed,
             false
         );
-         */
     }
     
     private void Die()

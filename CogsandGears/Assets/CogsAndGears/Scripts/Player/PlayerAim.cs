@@ -80,6 +80,11 @@ public class PlayerAim : MonoBehaviour
 
     private void UpdateFacing()
     {
+        if (Mathf.Abs(AimDirection.x) > MIN_FACING_THRESHOLD)
+        {
+            FacingDirection = Mathf.Sign(AimDirection.x);
+        }
+        
         FacingUtility.RotateTowardsX(
             _modelRoot,
             AimDirection.x,
