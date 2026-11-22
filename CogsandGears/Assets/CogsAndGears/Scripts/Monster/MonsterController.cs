@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class MonsterController : MonoBehaviour
 {
-    private const float DEFAULT_MODEL_ROTATION_ANGLE = 45f;
     // 도약 직후 아직 지면과 닿아 있는 접촉을 착지로 오판하지 않기 위한 최소 체공 시간
     private const float MIN_AIRBORNE_SECONDS = 0.1f;
     // 이 값보다 빠르게 상승 중이면 착지로 보지 않는다
@@ -19,6 +18,10 @@ public class MonsterController : MonoBehaviour
     [SerializeField] private BehaviorGraphAgent _agent;
     [SerializeField] private Transform _modelRoot;
     [SerializeField] private float _turnSpeed = 540f;
+    [Tooltip("플레이어가 오른쪽에 있을 때 모델의 월드 Y 회전각. 모델의 전방 축에 맞춰 몬스터별로 설정한다.")]
+    [SerializeField] private float _rightFacingAngle = 135f;
+    [Tooltip("플레이어가 왼쪽에 있을 때 모델의 월드 Y 회전각")]
+    [SerializeField] private float _leftFacingAngle = 225f;
     [SerializeField] private bool _defaultFacingRight = true;
     
     [Header("Jump Attack")]
@@ -47,6 +50,7 @@ public class MonsterController : MonoBehaviour
     
     // 공격 트리거부터 JumpAttack 애니메이션 종료까지 true. 이 동안 ChaseAction은 Rigidbody를 제어하지 않는다.
     public bool IsJumpAttacking { get; private set; }
+    public StatDataSO Stats => _stats;
 
     private void Awake()
     {
@@ -90,13 +94,8 @@ public class MonsterController : MonoBehaviour
 
         float directionX = _target.position.x - transform.position.x;
 
-        Quaternion rightRotation = Quaternion.Euler(
-            0f, DEFAULT_MODEL_ROTATION_ANGLE + 90f, 0f
-        );
-
-        Quaternion leftRotation = Quaternion.Euler(
-            0f, DEFAULT_MODEL_ROTATION_ANGLE + 180f, 0f
-        );
+        Quaternion rightRotation = Quaternion.Euler(0f, _rightFacingAngle, 0f);
+        Quaternion leftRotation = Quaternion.Euler(0f, _leftFacingAngle, 0f);
 
         FacingUtility.RotateTowardsX(
             _modelRoot,
