@@ -58,6 +58,12 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     
     private void InitGameRun()
     {
+        // 첫 Stage만 활성화되도록 모든 Stage를 끈 상태에서 시작한다(StartStage가 현재 Stage를 켠다)
+        foreach (var stage in _stages)
+        {
+            stage.gameObject.SetActive(false);
+        }
+
         _currentStageIndex = FIRST_STAGE;
         _currentStage = _stages[_currentStageIndex];
     }
@@ -120,6 +126,14 @@ public class GameFlowManager : SingletonBehaviour<GameFlowManager>
     private void StageClear()
     {
         _currentStage.Cleared -= StageClear;
+
+        // 마지막 Stage는 인벤토리 정비 없이 바로 Run을 클리어한다
+        if (_currentStageIndex == _stages.Count - 1)
+        {
+            GameClear();
+            return;
+        }
+
         ChangeFlowState(GameFlowState.STAGE_CLEAR);
     }
 
