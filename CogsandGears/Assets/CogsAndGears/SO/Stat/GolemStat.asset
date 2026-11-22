@@ -17,4 +17,4 @@ MonoBehaviour:
   _turnSpeed: 540
   _damage: 20
   _attackInterval: 3
-  _attackRange: 2
+  _attackRange: 5

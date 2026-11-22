@@ -13,10 +13,12 @@ public partial class ChaseAction : Action
     [SerializeReference] public BlackboardVariable<float> AttackRange;
 
     private Rigidbody _rb;
+    private MonsterController _monster;
 
     protected override Status OnStart()
     {
         _rb = GameObject.GetComponent<Rigidbody>();
+        _monster = GameObject.GetComponent<MonsterController>();
 
         return _rb != null ? Status.Running : Status.Failure;
     }
@@ -24,6 +26,10 @@ public partial class ChaseAction : Action
     protected override Status OnUpdate()
     {
         if (Target.Value == null)
+            return Status.Failure;
+
+        // 점프 공격 중에는 Rigidbody 속도를 건드리지 않는다
+        if (IsJumpAttacking())
             return Status.Failure;
 
         float deltaX =
@@ -45,14 +51,16 @@ public partial class ChaseAction : Action
     {
         if (_rb == null) return;
 
-        Debug.Log(
-            $"Chase End | Velocity: {_rb.linearVelocity}"
-        );
+        if (IsJumpAttacking()) return;
 
-        
         Vector3 velocity = _rb.linearVelocity;
         velocity.x = 0f;
         _rb.linearVelocity = velocity;
+    }
+
+    private bool IsJumpAttacking()
+    {
+        return _monster != null && _monster.IsJumpAttacking;
     }
 }
 
