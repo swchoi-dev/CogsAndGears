@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerDash : MonoBehaviour
@@ -18,9 +19,24 @@ public class PlayerDash : MonoBehaviour
     private bool _isDashRequested;
     private bool _isDashing;
     private int _currentDashCount;
+    // 사용한 대시가 충전될 시각(사용 순서대로). 충전 코루틴과 같은 순서로 빠진다.
+    private readonly Queue<float> _restoreTimes = new Queue<float>();
     
     private bool CanDash => !_isDashing && _currentDashCount > 0;
     public bool IsDashing => _isDashing;
+    public int CurrentDashCount => _currentDashCount;
+    public int MaxDashCount => _maxDashCount;
+
+    // 다음 대시 1회가 충전되기까지의 진행도(0~1). 충전 대기 중인 대시가 없으면 1.
+    public float RechargeProgress
+    {
+        get
+        {
+            if (_restoreTimes.Count == 0 || _reChargeDuration <= 0f) return 1f;
+
+            return Mathf.Clamp01(1f - (_restoreTimes.Peek() - Time.time) / _reChargeDuration);
+        }
+    }
     
     public event Action DashStarted;
     public event Action DashFinished;
@@ -72,6 +88,9 @@ public class PlayerDash : MonoBehaviour
     {
         yield return new WaitForSeconds(_reChargeDuration);
         
+        if (_restoreTimes.Count > 0)
+            _restoreTimes.Dequeue();
+
         RestoreDash();
     }
 
@@ -80,6 +99,7 @@ public class PlayerDash : MonoBehaviour
         if (!CanDash) return false;
         
         _currentDashCount -= 1;
+        _restoreTimes.Enqueue(Time.time + _reChargeDuration);
         _isDashRequested = true;
         _isDashing = true;
         
@@ -101,6 +121,7 @@ public class PlayerDash : MonoBehaviour
         _isDashRequested = false;
         _isDashing = false;
         _currentDashCount = _maxDashCount;
+        _restoreTimes.Clear();
     }
     
     private void CacheComponents()
