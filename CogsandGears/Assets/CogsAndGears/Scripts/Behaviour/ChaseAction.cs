@@ -45,6 +45,11 @@ public partial class ChaseAction : Action
     {
         if (_rb == null) return;
 
+        Debug.Log(
+            $"Chase End | Velocity: {_rb.linearVelocity}"
+        );
+
+        
         Vector3 velocity = _rb.linearVelocity;
         velocity.x = 0f;
         _rb.linearVelocity = velocity;

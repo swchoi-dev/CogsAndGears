@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 8532413386435191106}
   - component: {fileID: 140838600258715721}
   - component: {fileID: 5513859461437885140}
+  - component: {fileID: 1539351712333597774}
   m_Layer: 7
   m_Name: MechGolem
   m_TagString: Untagged
@@ -150,6 +151,8 @@ MonoBehaviour:
   _modelRoot: {fileID: 8431249027703626767}
   _turnSpeed: 540
   _defaultFacingRight: 1
+  _jumpDuration: 0.8
+  _maxJumpDistance: 5
 --- !u!114 &5513859461437885140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,15 +165,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
-  m_Graph: {fileID: -4708503111835743681, guid: f1cb3db4c3beaa141bcff81490ee0c07, type: 2}
+  m_Graph: {fileID: -4708503111835743681, guid: 2009b26bdbac56e498239fdfa04a92f2, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 6004329004464603946
-  m_OriginalGraph: {fileID: -4708503111835743681, guid: f1cb3db4c3beaa141bcff81490ee0c07, type: 2}
+  - rid: 3611312338672550275
+  m_OriginalGraph: {fileID: -4708503111835743681, guid: 2009b26bdbac56e498239fdfa04a92f2, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
     version: 2
     RefIds:
+    - rid: 3611312338672550275
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 484956383790261555
+          m_Value1: 3906448782943976599
+        Name: New Animator
+        m_Value: {fileID: 7474706313026717965}
     - rid: 6004329004464603946
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -179,6 +191,20 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 8809881112932396789}
+--- !u!114 &1539351712333597774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8809881112932396789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 317108386963b489cb37d70af8210f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAnimHandler
+  _animator: {fileID: 7474706313026717965}
+  _moveThreshold: 0.1
 --- !u!1001 &7417371092064842113
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -475,13 +501,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 95902137545226380, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 48ea7e3d81a4c4384a71621181346741, type: 2}
+    - target: {fileID: 95902137545226380, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1170732337855516, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 81472605218778043}
   m_SourcePrefab: {fileID: 100100000, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
+--- !u!1 &7416271297826082205 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1170732337855516, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
+  m_PrefabInstance: {fileID: 7417371092064842113}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &81472605218778043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7416271297826082205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d78e64df848242d090b1e8d96dd3339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GolemAnimationEvents
 --- !u!4 &7421896447102441663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4526463827110206, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
+  m_PrefabInstance: {fileID: 7417371092064842113}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7474706313026717965 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95902137545226380, guid: 5aed7f791a03c2a4ba0040d2fa161639, type: 3}
   m_PrefabInstance: {fileID: 7417371092064842113}
   m_PrefabAsset: {fileID: 0}

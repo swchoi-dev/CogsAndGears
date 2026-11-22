@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3623644775059803829}
   - component: {fileID: 7862755501260452747}
   - component: {fileID: 4357463758045013359}
+  - component: {fileID: -6091572718496004618}
   m_Layer: 7
   m_Name: FortGolem
   m_TagString: Untagged
@@ -45,7 +46,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5065762237699315739}
   serializedVersion: 5
-  m_Mass: 0.0001
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -118,6 +119,8 @@ MonoBehaviour:
   _modelRoot: {fileID: 6463761793952063838}
   _turnSpeed: 540
   _defaultFacingRight: 1
+  _jumpDuration: 0.8
+  _maxJumpDistance: 5
 --- !u!114 &4357463758045013359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,12 +136,21 @@ MonoBehaviour:
   m_Graph: {fileID: -4708503111835743681, guid: 2009b26bdbac56e498239fdfa04a92f2, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 6004329004464603947
+  - rid: 3611312338672550255
   m_OriginalGraph: {fileID: -4708503111835743681, guid: 2009b26bdbac56e498239fdfa04a92f2, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
     version: 2
     RefIds:
+    - rid: 3611312338672550255
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 484956383790261555
+          m_Value1: 3906448782943976599
+        Name: New Animator
+        m_Value: {fileID: 5012307994257255507}
     - rid: 6004329004464603947
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -147,6 +159,20 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 5065762237699315739}
+--- !u!114 &-6091572718496004618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065762237699315739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 317108386963b489cb37d70af8210f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAnimHandler
+  _animator: {fileID: 5012307994257255507}
+  _moveThreshold: 0.1
 --- !u!1 &7357010096513106455
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,13 +513,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 95928138128809556, guid: fe16b94572a04254e9757241e9e92235, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 48ea7e3d81a4c4384a71621181346741, type: 2}
+    - target: {fileID: 95928138128809556, guid: fe16b94572a04254e9757241e9e92235, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1691206179217438, guid: fe16b94572a04254e9757241e9e92235, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8150428122523234427}
   m_SourcePrefab: {fileID: 100100000, guid: fe16b94572a04254e9757241e9e92235, type: 3}
 --- !u!4 &4960133861309873943 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4058047545527568, guid: fe16b94572a04254e9757241e9e92235, type: 3}
+  m_PrefabInstance: {fileID: 4961706415567417863}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4962271446037549593 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1691206179217438, guid: fe16b94572a04254e9757241e9e92235, type: 3}
+  m_PrefabInstance: {fileID: 4961706415567417863}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8150428122523234427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962271446037549593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d78e64df848242d090b1e8d96dd3339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GolemAnimationEvents
+--- !u!95 &5012307994257255507 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95928138128809556, guid: fe16b94572a04254e9757241e9e92235, type: 3}
   m_PrefabInstance: {fileID: 4961706415567417863}
   m_PrefabAsset: {fileID: 0}
