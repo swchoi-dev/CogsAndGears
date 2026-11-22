@@ -46,6 +46,8 @@ GameObject:
   - component: {fileID: 7800352222644005157}
   - component: {fileID: 7827652707930879584}
   - component: {fileID: 2751536663405494053}
+  - component: {fileID: 4570599726085415318}
+  - component: {fileID: 6084398466720716938}
   m_Layer: 7
   m_Name: Drone
   m_TagString: Untagged
@@ -91,10 +93,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 124
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!65 &6539777795955234625
 BoxCollider:
@@ -147,6 +149,8 @@ MonoBehaviour:
   _agent: {fileID: 2751536663405494053}
   _modelRoot: {fileID: 5966531402329521049}
   _turnSpeed: 540
+  _rightFacingAngle: 0
+  _leftFacingAngle: 180
   _defaultFacingRight: 1
   _jumpDuration: 1.3
   _maxJumpDistance: 5
@@ -181,6 +185,40 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 2271656851769237614}
+--- !u!114 &4570599726085415318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2271656851769237614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 317108386963b489cb37d70af8210f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAnimHandler
+  _animator: {fileID: 1094681765680433701}
+  _moveThreshold: 0.1
+  _includeVerticalSpeed: 1
+--- !u!114 &6084398466720716938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2271656851769237614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee48314b239fe4384acb6435d2609672, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DroneController
+  _preferredDistance: 3.5
+  _hoverHeight: 2.5
+  _repositionThreshold: 1
+  _arriveTolerance: 0.1
+  _muzzlePoint: {fileID: 2214195152683620743}
+  _projectilePrefab: {fileID: -1582990983545478000, guid: 8f9d1dd868ca04975a3d49293648c191, type: 3}
+  _projectileSpeed: 10
 --- !u!1001 &2911456779712989721
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -236,8 +274,58 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc3ffb4dfe28b426b955507c8503b0f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1094681765680433701}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc3ffb4dfe28b426b955507c8503b0f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5503047285367723216}
   m_SourcePrefab: {fileID: 100100000, guid: fc3ffb4dfe28b426b955507c8503b0f0, type: 3}
+--- !u!4 &2214195152683620743 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5269787427086838882, guid: fc3ffb4dfe28b426b955507c8503b0f0, type: 3}
+  m_PrefabInstance: {fileID: 2911456779712989721}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2641074561537226568 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fc3ffb4dfe28b426b955507c8503b0f0, type: 3}
+  m_PrefabInstance: {fileID: 2911456779712989721}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1094681765680433701
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2641074561537226568}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c3447258d00c24bfa8ee4a2e94a65167, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5503047285367723216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2641074561537226568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80c28ab5a2b348bab2c64058da8d9cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DroneAnimationEvents
 --- !u!4 &3453464861383552498 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fc3ffb4dfe28b426b955507c8503b0f0, type: 3}
