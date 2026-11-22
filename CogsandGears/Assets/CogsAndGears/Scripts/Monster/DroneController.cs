@@ -9,7 +9,7 @@ public class DroneController : MonoBehaviour
     private const float ATTACK_START_GRACE_SECONDS = 0.3f;
 
     [Header("Flight")]
-    [Tooltip("플레이어 기준 유지할 수평 거리")]
+    [Tooltip("플레이어와의 최소 수평 거리. 이보다 가까우면 이 거리까지 물러난다")]
     [SerializeField] private float _preferredDistance = 3.5f;
     [Tooltip("플레이어 기준 유지할 높이")]
     [SerializeField] private float _hoverHeight = 2.5f;
@@ -17,6 +17,8 @@ public class DroneController : MonoBehaviour
     [SerializeField] private float _repositionThreshold = 1f;
     [Tooltip("사격 위치까지 이 거리 이내면 도착으로 본다")]
     [SerializeField] private float _arriveTolerance = 0.1f;
+    [Tooltip("사거리 밖에서 접근할 때 AttackRange보다 이만큼 안쪽까지 들어간다 (경계 진동 방지)")]
+    [SerializeField] private float _attackRangeMargin = 0.5f;
 
     [Header("Ranged Attack")]
     [SerializeField] private Transform _muzzlePoint;
@@ -48,7 +50,8 @@ public class DroneController : MonoBehaviour
     }
 
     // 공격 범위를 벗어났거나 사격 위치에서 충분히 벗어나 다시 이동해야 하면 true.
-    // 공격 범위는 그래프의 Distance 조건과 같은 기준(Transform 간 거리)으로 판단한다.
+    // 공격 범위는 그래프의 Distance 조건과 같은 기준(Transform 간 3D 거리)으로 판단한다.
+    // 사거리 안에서는 사격 위치가 현재 수평 위치를 유지하므로, 너무 가깝거나 높이가 크게 어긋난 경우에만 이동한다.
     public bool NeedsReposition(Transform target)
     {
         if (Vector3.Distance(transform.position, target.position) > _monster.Stats.AttackRange)
@@ -137,14 +140,27 @@ public class DroneController : MonoBehaviour
         projectile.Launch();
     }
 
+    // 현재 있는 쪽과 수평 거리를 최대한 유지하는 사격 위치.
+    // 수평 거리는 [_preferredDistance, 사거리 안쪽 최대 수평 거리]로 제한하고, 높이는 플레이어 + _hoverHeight.
+    // → 사거리 안이면 x는 그대로(높이만 보정), 너무 가까우면 물러나고, 사거리 밖이면 사거리 안쪽까지 접근한다.
     private Vector3 GetFirePosition(Transform target)
     {
-        // 현재 있는 쪽을 유지한 채 플레이어 위 일정 높이·거리에 머문다
-        float side = _rb.position.x >= target.position.x ? 1f : -1f;
+        Vector3 targetPosition = target.position;
+        float side = _rb.position.x >= targetPosition.x ? 1f : -1f;
+        float horizontalDistance = Mathf.Abs(_rb.position.x - targetPosition.x);
+
+        // 사격 위치(높이 _hoverHeight, 현재 z)에서 Transform 간 거리가 (AttackRange - 여유) 이내가 되는 최대 수평 거리
+        float rangeInside = Mathf.Max(0f, _monster.Stats.AttackRange - _attackRangeMargin);
+        float depth = transform.position.z - targetPosition.z;
+        float maxHorizontal = Mathf.Sqrt(Mathf.Max(0f, rangeInside * rangeInside - _hoverHeight * _hoverHeight - depth * depth));
+        // 사거리가 최소 거리보다 짧게 설정된 경우에도 최소 거리를 우선한다
+        maxHorizontal = Mathf.Max(maxHorizontal, _preferredDistance);
+
+        float desiredHorizontal = Mathf.Clamp(horizontalDistance, _preferredDistance, maxHorizontal);
 
         return new Vector3(
-            target.position.x + side * _preferredDistance,
-            target.position.y + _hoverHeight,
+            targetPosition.x + side * desiredHorizontal,
+            targetPosition.y + _hoverHeight,
             _rb.position.z
         );
     }

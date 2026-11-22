@@ -2620,11 +2620,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 14, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1132960163 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3692533306584443682, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
-  m_PrefabInstance: {fileID: 5804346879512062369}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1148835124
 GameObject:
   m_ObjectHideFlags: 0
@@ -5466,26 +5461,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3075742087625699469, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
   m_PrefabInstance: {fileID: 5804346879512062369}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1132960163}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22ba96457133d4940831d8e937f9ef7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeapon
---- !u!114 &3974719472233344747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1132960163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f979ae5d0b12f2547b515bf3257d28a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  _stats: {fileID: 11400000, guid: 2d04300ea3ee2a2408ddf5f001c38ddd, type: 2}
-  _currentHp: 0
 --- !u!1001 &5804346879512062369
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5494,6 +5475,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1251123513}
     m_Modifications:
+    - target: {fileID: -853729413155514124, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
+      propertyPath: _maxShield
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: -853729413155514124, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
+      propertyPath: _shieldRechargeDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -853729413155514124, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
+      propertyPath: _shieldRechargePerSecond
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 100723651932261613, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -5737,10 +5730,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3692533306584443682, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3974719472233344747}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6438aaf4cfef605489fcb7ac70ba3baa, type: 3}
 --- !u!1001 &7666510379932251424
 PrefabInstance:
