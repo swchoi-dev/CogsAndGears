@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerDash : MonoBehaviour
+public class PlayerDash : MonoBehaviour, IInvulnerable
 {
     [SerializeField] private float _dashForce = 100f;
     [SerializeField] private float _dashDuration = 1f;
     [SerializeField] private float _reChargeDuration = 5f;
     [SerializeField] private int _maxDashCount = 1;
     [SerializeField] private Transform _modelRoot;
+    [Tooltip("대시 중(IsDashing) 피해를 받지 않는다. Health가 IInvulnerable로 확인한다")]
+    [SerializeField] private bool _invulnerableWhileDashing = true;
     
     private PlayerMovement _playerMovement;
     private PlayerAim _playerAim;
@@ -24,6 +26,7 @@ public class PlayerDash : MonoBehaviour
     
     private bool CanDash => !_isDashing && _currentDashCount > 0;
     public bool IsDashing => _isDashing;
+    public bool IsInvulnerable => _invulnerableWhileDashing && _isDashing;
     public int CurrentDashCount => _currentDashCount;
     public int MaxDashCount => _maxDashCount;
 

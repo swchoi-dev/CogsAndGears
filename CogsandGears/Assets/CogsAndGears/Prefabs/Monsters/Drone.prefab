@@ -48,6 +48,8 @@ GameObject:
   - component: {fileID: 2751536663405494053}
   - component: {fileID: 4570599726085415318}
   - component: {fileID: 6084398466720716938}
+  - component: {fileID: 2547667876646578535}
+  - component: {fileID: 3836880243869405137}
   m_Layer: 7
   m_Name: Drone
   m_TagString: Untagged
@@ -231,6 +233,37 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 1
+--- !u!114 &2547667876646578535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2271656851769237614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72a3e9e7770e4c6ab13a452f6458f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitFlash
+  _health: {fileID: 0}
+  _renderers: []
+  _flashColor: {r: 1.6, g: 0.15, b: 0.15, a: 1}
+  _flashDuration: 0.12
+--- !u!114 &3836880243869405137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2271656851769237614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eb28d9a86d8447c1b6d2bfdbc865ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageNumberEmitter
+  _health: {fileID: 0}
+  _color: {r: 1, g: 0.93, b: 0.55, a: 1}
+  _offset: {x: 0, y: 0.2, z: 0}
 --- !u!1001 &1809182970441596761
 PrefabInstance:
   m_ObjectHideFlags: 0
