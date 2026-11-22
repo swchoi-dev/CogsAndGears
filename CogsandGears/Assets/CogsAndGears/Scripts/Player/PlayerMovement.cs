@@ -47,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
 
         float signedSpeed = _currentSpeed * signedMoveX;
         _playerAnim.SetMoveSpeed(signedSpeed);
+        
     }
     
     private void FixedUpdate()

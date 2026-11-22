@@ -13,7 +13,7 @@ public class StatDataSO : ScriptableObject
     
     [Header("Monster Stats")]
     [SerializeField] private int _damage;
-    [SerializeField] private float _attackRate;
+    [SerializeField] private float _attackInterval;
     [SerializeField] private float _attackRange;
     
     public int MaxHealth => _maxHealth;
@@ -21,6 +21,6 @@ public class StatDataSO : ScriptableObject
     public float TurnSpeed => _turnSpeed;
     
     public int Damage => _damage;
-    public float AttackRate => _attackRate;
+    public float AttackInterval => _attackInterval;
     public float AttackRange => _attackRange;
 }

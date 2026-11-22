@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DroneStat
   m_EditorClassIdentifier: Assembly-CSharp::StatDataSO
   _maxHealth: 50
-  _moveSpeed: 10
+  _moveSpeed: 3
   _turnSpeed: 540
   _damage: 5
-  _attackRate: 3
-  _attackRange: 20
+  _attackInterval: 1
+  _attackRange: 10

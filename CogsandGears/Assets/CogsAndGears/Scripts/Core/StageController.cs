@@ -6,6 +6,7 @@ public class StageController : MonoBehaviour
 {
     [SerializeField] private List<MonsterSpawnData> _monsters;
     [SerializeField] private Transform _playerSpawnPoint;
+    [SerializeField] private Transform _playerTarget;
     [SerializeField] private BoxCollider2D _cameraBounds;
     
     private float _elapsedTime;
@@ -65,8 +66,9 @@ public class StageController : MonoBehaviour
             monster.SpawnPoint.rotation,
             transform
         );
-                
+        
         instance.GetComponent<Health>().OnDeath += OnMonsterDead;
+        instance.GetComponent<MonsterController>().Initialize(_playerTarget);
         
         monster.IsSpawned = true;
         _aliveMonsterCount++;
