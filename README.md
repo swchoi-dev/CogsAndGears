@@ -70,45 +70,9 @@ Cogs HP가 0이 되면 언제든 End Scene / Defeat
 | Gears |
 |<img width="1122" height="1402" alt="ChatGPT 이미지 2026년 11월 6일 오후 01_37_18-1" src="https://github.com/user-attachments/assets/aeb5de89-c8d4-4cb9-a960-8690df323bb4" />|
 
-
-
-## 프로젝트 현황
-
-- [ ] **CG-01** Unity 프로젝트 및 기본 환경 구축
-- [ ] **CG-04** Cogs 이동 / 회피 / 조준 / 애니메이션
-- [ ] **CG-05 / CG-06** 전투 및 Monster 구현
-- [ ] **CG-07 / CG-03** Stage 및 Run 진행 연결
-- [ ] **CG-08 / CG-09** 스크롤 Inventory 및 Stage 보상
-- [ ] **CG-10** Gears 동료 연출
-- [ ] **CG-11 / CG-12** 비주얼·UI·사운드·테스트
-
-> 이 체크리스트는 계획이며, 완료 상태를 의미하지 않습니다.
-
 ## 문서
 
 - [프로젝트 스펙 / 기능 명세 (PROJECT_SPEC.md)](docs/PROJECT_SPEC.md)
 
-## 디렉터리 구조 (예정)
-
-```text
-CogsAndGears/
-├── Assets/                    # Unity 프로젝트 에셋 (프로젝트 생성 후)
-├── Packages/
-├── ProjectSettings/
-├── README.md
-└── docs/
-    ├── PROJECT_SPEC.md
-    └── images/
-        ├── title-concept.jpg
-        ├── character-concept.jpg
-        ├── world-concept.jpg
-        └── cogs-model-reference.jpg
-```
-
-## 개발 원칙
-
-이 프로젝트는 **AI 코딩 에이전트 없이 직접 구현**합니다. AI는 기획·기술 리서치·설계 검토·문서 정리에만 보조적으로 활용하며, 설계는 단순성과 책임 분리를 우선합니다.
-
----
 
 *Project specification: 2026-11-06 · Concept art is subject to change.*
