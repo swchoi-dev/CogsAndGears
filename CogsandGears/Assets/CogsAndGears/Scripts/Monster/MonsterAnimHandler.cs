@@ -38,7 +38,8 @@ public class MonsterAnimHandler : MonoBehaviour
             ? new Vector2(velocity.x, velocity.y).magnitude
             : Mathf.Abs(velocity.x);
 
-        _animator.SetBool(IsMoving, speed > _moveThreshold);
+        // JumpAttack 중 도약 속도는 이동으로 보지 않는다. 공격이 끝나야 Run으로 전환된다.
+        _animator.SetBool(IsMoving, speed > _moveThreshold && !IsPlayingJumpAttack());
     }
 
     public void PlayJumpAttack()
@@ -48,9 +49,19 @@ public class MonsterAnimHandler : MonoBehaviour
         _animator.SetTrigger(JumpAttackTrigger);
     }
 
-    // JumpAttack 상태를 재생 중이거나 해당 상태로 전환 중이면 true
+    // JumpAttack 상태를 재생 중이거나 해당 상태로 전환 중이면 true.
+    // JumpAttack은 종료 전환 없이 상태에 머무르므로 클립을 끝까지 재생했으면(normalizedTime >= 1) 종료로 본다.
     public bool IsPlayingJumpAttack()
     {
+        if (_animator == null) return false;
+
+        if (!_animator.IsInTransition(0))
+        {
+            AnimatorStateInfo current = _animator.GetCurrentAnimatorStateInfo(0);
+            if (current.shortNameHash == JumpAttackState && current.normalizedTime >= 1f)
+                return false;
+        }
+
         return IsPlayingState(JumpAttackState);
     }
 
