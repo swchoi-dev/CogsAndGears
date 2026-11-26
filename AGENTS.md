@@ -1,11 +1,11 @@
-# Cogs & Gears — Codex 프로젝트 관리
+# Cogs & Gears — 에이전트 작업 지침
 
-Codex는 개발 관리 에이전트다. 기획·설계·기술문서, 로드맵, Git·GitHub Issues 관리와 검증 기록을 담당한다. Unity 게임 구현은 개발자가 직접 수행한다. 한국어로 소통한다.
+에이전트(Codex, Claude Code)는 기획·설계·기술문서, 로드맵, Git·GitHub Issues 관리, 검증 기록과 함께 Unity 구현·Editor 설정·Play Mode 검증을 수행한다. 개발자는 최종 설계 결정, 작업 방향, 결과 검토와 Merge 승인을 담당한다. 한국어로 소통한다.
 
 ## 작업 경계
 - Git 루트에서 작업한다. 시작 시 `git rev-parse --show-toplevel`, `git status --short`, `git branch --show-current`로 실제 상태를 확인한다. 인계 문서의 과거 상태를 현재 상태로 간주하지 않는다.
-- `CogsandGears/` 전체, C# 코드, Scene·Prefab·Asset·Material·`.meta`·Packages·ProjectSettings를 변경하지 않는다. Unity Editor 실행 및 Unity MCP·CLI 조작도 하지 않는다. 분석은 읽기 전용으로 수행한다.
-- 승인된 범위에서 `AGENTS.md`, `.agents/`, `docs/`, 요청된 `README.md`를 관리한다. 프로젝트 관리 에이전트는 Codex만 사용하며 Claude 전용 설정은 재생성하지 않는다.
+- C# 코드, Scene·Prefab·Asset·Material·Animator·ScriptableObject와 Import Settings는 승인된 작업 범위에서 Unity Editor(Unity MCP·Editor API·Editor Script)를 통해 변경한다. YAML 직접 수정은 최후의 수단이며 GUID·fileID를 추정하지 않는다. Packages·ProjectSettings는 필요한 범위를 밝히고 승인된 경우만 변경한다. 세부 범위는 [역할과 쓰기 범위](.agents/rules/cg-role-boundary.md)를 따른다.
+- 승인된 범위에서 `AGENTS.md`, `.agents/`, `docs/`, 요청된 `README.md`를 관리한다. 에이전트별 도구 연결 설정(예: Unity MCP)은 작업에 필요한 범위만 구성한다.
 - Git 쓰기와 GitHub 쓰기는 해당 대상·내용·작업에 대한 사용자 승인 범위에서만 수행한다. 기존 승인은 같은 범위에서 재사용하며 새 작업으로 확대하지 않는다. 명시적 금지가 있으면 실행하지 않는다.
 - PR Merge 수행 주체는 미확정이다. Merge가 명시적으로 승인되지 않으면 제안까지만 한다. 원본 AI Harness 저장소 반영은 별도 작업이다.
 - 개발자의 변경을 보존하고 임의로 stage·restore·stash하지 않는다.
@@ -22,7 +22,7 @@ Codex는 개발 관리 에이전트다. 기획·설계·기술문서, 로드맵,
 | Git·PR·릴리스 | [git-workflow](.agents/rules/git-workflow.md) |
 | Issue·로드맵·완료 판단 | [github-issue-workflow](.agents/rules/github-issue-workflow.md) |
 | Issue 초안·검증 댓글 | [github-issue-template](.agents/rules/github-issue-template.md) |
-| Unity 읽기 전용 조사·구현 가이드 | [unity-guidelines](.agents/rules/unity-guidelines.md), [coding-conventions](.agents/rules/coding-conventions.md) |
+| Unity 구현·Editor 설정·검증 | [unity-guidelines](.agents/rules/unity-guidelines.md), [coding-conventions](.agents/rules/coding-conventions.md) |
 
 ## 프로젝트 기준
 - GitHub: `swchoi-dev/CogsAndGears`. Unity 루트: `CogsandGears/`. 콘텐츠: `CogsandGears/Assets/CogsAndGears/`.

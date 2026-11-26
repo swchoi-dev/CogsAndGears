@@ -1,6 +1,6 @@
 # Git·PR·배포 정책
 
-역할 제한은 [cg-role-boundary.md](cg-role-boundary.md)를 따른다. Codex는 커밋 메시지·브랜치명·PR 내용 추천과 읽기 전용 확인만 수행한다. 실제 Git Commit·Push·브랜치 작업·Merge·PR 작업은 개발자가 직접 수행하며 Codex는 실행하지 않는다. 아래 정책은 개발자가 수행하는 작업의 기준이며 Unity 구현 권한을 부여하지 않는다.
+역할 제한은 [cg-role-boundary.md](cg-role-boundary.md)를 따른다. 브랜치·Commit·Push·PR 작업은 사용자가 승인한 대상과 범위에서 에이전트가 수행할 수 있으며, Merge는 명시적으로 승인된 경우만 수행한다. 아래 정책은 개발자와 에이전트가 수행하는 Git 작업의 공통 기준이다.
 
 - 브랜치: `feature/<실제 Issue 번호>-<영문 kebab-case 기능명>` → `develop` → `prod`.
 - 기능 브랜치는 실제 존재를 확인한 `develop`에서 분기한다. `prod`에 직접 개발 커밋하지 않는다. 현재 브랜치와 기본 브랜치는 매번 조회하며 이름·존재를 인계 문서에서 추정하지 않는다.
