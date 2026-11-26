@@ -172,9 +172,6 @@ MonoBehaviour:
   _dashAction: {fileID: -6435662806929191593, guid: c6d233fd9d9698e429e4cfd6d4b1cf8f, type: 3}
   _modelRoot: {fileID: 5025871713780278967}
   _moveSpeed: 4
-  _runThreshold: 2
-  _acceleration: 2.5
-  _deceleration: 5
 --- !u!114 &3199701320867618872
 MonoBehaviour:
   m_ObjectHideFlags: 0
