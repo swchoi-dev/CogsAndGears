@@ -104,3 +104,9 @@ CLAUDE.md
 - `git diff --check`와 미추적 Markdown의 별도 공백 검사 통과. Git 삭제 목록은 위 manifest와 정확히 일치한다. `prod`와 HEAD `1d7a38ed158b5743a6a928447aa5dfc4c0e1ba75` 유지.
 - 현재 도구 세션의 권한은 workspace-write·명령별 승인 정책이다. 별도 app-server `config/read`에서 sandbox_mode·approval_policy가 null인 것은 해당 설정값이 명시되지 않았다는 뜻이며 현재 세션의 권한이 해제됐다는 증거로 해석하지 않았다.
 - `.claude/` 삭제 전 절대 경로·재분석 지점 부재·manifest·파일 해시를 확인했다. 사용자 전역 설정·다른 프로젝트·원본 Harness·Git 이력·브랜치·GitHub에는 쓰지 않았다. 일반 셸의 sandbox setup 오류 때문에 검증과 승인된 삭제는 별도 승인 실행 경로를 사용했다.
+
+## 역할 정책 변경 (2026-11-26, Issue #100)
+- 사용자 지시로 프로젝트 공식 정책을 변경했다. 에이전트(Codex, Claude Code)는 C#·Scene·Prefab·FBX Import Settings·Animator·Material·ScriptableObject 변경, Unity MCP·Editor API를 이용한 Editor 조작, Play Mode·Console 검증을 수행할 수 있다. 개발자는 최종 설계 결정·작업 방향·결과 검토·Merge 승인을 담당한다.
+- 위 이관 기록의 "Unity 금지 유지", "읽기 전용 분석으로 한정" 등은 2026-11-10 당시 상태이며 현재 정책이 아니다.
+- 수정 파일: `AGENTS.md`, `rules/cg-role-boundary.md`, `rules/unity-guidelines.md`, `rules/coding-conventions.md`, `rules/git-workflow.md`(수행 주체 문구만), `rules/github-issue-workflow.md`, `rules/github-issue-template.md`, `skills/start-issue`, `skills/record-verification`, `skills/write-tech-doc`, `templates/implementation-brief.md`, `templates/issue-task.md`.
+- 유지: Git Workflow(브랜치·커밋·PR·Merge 승인), Issue 관리, 코드 작성 규칙, 사용자 변경·GUID 보존. YAML 직접 수정은 최후의 수단이며 GUID·fileID를 추정하지 않는다.

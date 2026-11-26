@@ -16,4 +16,4 @@
 ## 참고 문서
 - <존재를 확인한 문서·상위 Issue>
 
-<!-- Unity 구현 작업이면 개발자 컴파일·Console·Play Mode 검증 조건을 추가한다. -->
+<!-- Unity 구현 작업이면 컴파일·Console·Play Mode 검증 조건을 추가한다. -->
