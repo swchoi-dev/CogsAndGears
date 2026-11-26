@@ -24,6 +24,8 @@ public class PlayerAim : MonoBehaviour
     private PlayerDash _playerDash;
 
     public Vector2 AimDirection { get; private set; } = Vector2.right;
+    // 마우스 포인터의 월드(XY) 위치. 투사체는 총구에서 이 지점을 향해 발사된다.
+    public Vector2 AimPoint { get; private set; }
     public float FacingDirection { get; private set; } = 1f;
 
     private void Awake() => CacheComponents();
@@ -51,6 +53,7 @@ public class PlayerAim : MonoBehaviour
         Vector2 mouseScreen = Mouse.current.position.ReadValue();
 
         Vector2 mouseWorld = _camera.ScreenToWorldPoint(mouseScreen);
+        AimPoint = mouseWorld;
 
         Vector2 direction = mouseWorld - (Vector2)_aimOrigin.position;
 

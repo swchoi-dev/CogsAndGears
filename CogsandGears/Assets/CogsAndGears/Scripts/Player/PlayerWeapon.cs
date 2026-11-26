@@ -5,6 +5,8 @@ using Random = UnityEngine.Random;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    private const float MIN_AIM_DISTANCE_SQR = 0.01f;
+
     [SerializeField] Camera cam;
     [SerializeField] Animation camAnim;
     
@@ -14,6 +16,7 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] private List<WeaponRuntime> _weapons = new();
 
     private PlayerDash _playerDash;
+    private PlayerAim _playerAim;
     private WeaponRuntime _defaultWeapon;
 
     public WeaponDataSO DefaultData => _defaultData;
@@ -79,18 +82,16 @@ public class PlayerWeapon : MonoBehaviour
         // 무기별 랜덤 탄착각
         float spreadAngle = Random.Range(-data.SpreadAngle, data.SpreadAngle);
 
-        // 총은 애니메이션의 손 자세를 따르므로(예: Pistol Run Backward) 총구가 화면 안팎(z)으로 기울 수 있다.
-        // 총구 방향을 XY 플레이 평면에 투영하고 생성 위치도 플레이어 평면(z)에 맞춘다.
-        Vector3 muzzleDirection = _muzzlePoint.right;
-        muzzleDirection.z = 0f;
-        muzzleDirection.Normalize();
-
+        // 총은 애니메이션의 손 자세를 따르므로(예: Pistol Run Backward) 총구 방향이 조준과 어긋날 수 있다.
+        // 생성 위치는 총구(플레이어 평면 z)로 두고, 방향은 총구에서 마우스 포인터를 향하도록 XY 평면에서 계산한다.
         Vector3 origin = _muzzlePoint.position;
         origin.z = transform.position.z;
 
-        // 총구 방향에 탄착각 적용
+        Vector2 aimDirection = GetAimDirection(origin);
+
+        // 조준 방향에 탄착각 적용
         Vector3 fireDirection =
-            Quaternion.AngleAxis(spreadAngle, Vector3.forward) * muzzleDirection;
+            Quaternion.AngleAxis(spreadAngle, Vector3.forward) * new Vector3(aimDirection.x, aimDirection.y, 0f);
 
         // 최종 투사체 회전
         Quaternion projectileRotation = Quaternion.LookRotation(fireDirection);
@@ -114,8 +115,20 @@ public class PlayerWeapon : MonoBehaviour
         
     }
 
+    // 총구 → 마우스 포인터 방향. 포인터가 총구와 너무 가깝거나 총구 뒤쪽이면 어깨 기준 조준 방향을 쓴다.
+    private Vector2 GetAimDirection(Vector3 origin)
+    {
+        Vector2 toPointer = _playerAim.AimPoint - (Vector2)origin;
+
+        if (toPointer.sqrMagnitude < MIN_AIM_DISTANCE_SQR || Vector2.Dot(toPointer, _playerAim.AimDirection) <= 0f)
+            return _playerAim.AimDirection;
+
+        return toPointer.normalized;
+    }
+
     private void CacheComponents()
     {
         _playerDash = GetComponent<PlayerDash>();
+        _playerAim = GetComponent<PlayerAim>();
     }
 }
