@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
@@ -8,8 +7,7 @@ public class PlayerAim : MonoBehaviour
 {
     private const float MIN_AIM_DISTANCE = 0.0001f;
     private const float MIN_FACING_THRESHOLD = 0.1f;
-    private const float DEFAULT_HAND_ROTATION_ANGLE = 310f;
-    private const float DEFAULT_MODEL_ROTATION_ANGLE = 45f;
+    private const float SIDE_FACING_ANGLE = 90f;
     
     [SerializeField] private Camera _camera;
     
@@ -17,35 +15,19 @@ public class PlayerAim : MonoBehaviour
     [SerializeField] private Transform _aimOrigin;
     
     [SerializeField] private Transform _upperBodyTarget;
-    [SerializeField] private Transform _armTarget;
-    [SerializeField] private Transform _handTarget;
-    
+
     [SerializeField] private float _turnSpeed = 540f;
     [SerializeField] private float _bodyRotateRange = 50f;
-    [SerializeField] private float _armReach = 0.6f;
-    
-    [SerializeField] private TwoBoneIKConstraint _handIKConstraint;
-    
+    [Tooltip("완전 측면(0°)에서 카메라 쪽으로 돌리는 기본 회전 각도. 이전 3/4뷰는 45°")]
+    [SerializeField] private float _defaultModelRotationAngle = 0f;
+
     private PlayerDash _playerDash;
-    private Quaternion _initHandRotation;
-    
+
     public Vector2 AimDirection { get; private set; } = Vector2.right;
     public float FacingDirection { get; private set; } = 1f;
 
     private void Awake() => CacheComponents();
 
-    private void OnEnable()
-    {
-        _playerDash.DashFinished += OnDashFinished;
-        _playerDash.DashStarted += OnDashStarted;
-    }
-
-    private void OnDisable()
-    {
-        _playerDash.DashFinished -= OnDashFinished;
-        _playerDash.DashStarted -= OnDashStarted;
-    }
-    
     private void Start() => Init();
     
     private void Update()
@@ -58,10 +40,10 @@ public class PlayerAim : MonoBehaviour
         UpdateAnimRig();
     }
 
+    // 팔·손 자세는 애니메이션이 담당하고, Rig는 상체 조준만 갱신한다
     private void UpdateAnimRig()
     {
         UpdateUpperBody();
-        UpdateRightArm();
     }
     
     private void UpdateAim()
@@ -88,8 +70,8 @@ public class PlayerAim : MonoBehaviour
         FacingUtility.RotateTowardsX(
             _modelRoot,
             AimDirection.x,
-            Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE + 90f, 0f),
-            Quaternion.Euler(0f, DEFAULT_MODEL_ROTATION_ANGLE + 180f, 0f),
+            GetRightFacingRotation(),
+            GetLeftFacingRotation(),
             _turnSpeed,
             false
         );
@@ -113,36 +95,16 @@ public class PlayerAim : MonoBehaviour
         );
     }
 
-    private void UpdateRightArm()
-    {
-        Vector3 targetPosition = _armTarget.position 
-            + new Vector3(AimDirection.x, AimDirection.y, 0f) * _armReach;
-        
-        _handTarget.position = targetPosition;
-        
-        float handRotateAngle = Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg;
-        float facingAngle = FacingDirection > 0f ? 0f : -180f;
+    // 모델 정면(+Z)이 오른쪽(+X)을 보는 90°를 측면 기준으로, 좌우 모두 카메라 쪽으로 _defaultModelRotationAngle만큼 돌린다
+    private Quaternion GetRightFacingRotation() =>
+        Quaternion.Euler(0f, SIDE_FACING_ANGLE + _defaultModelRotationAngle, 0f);
 
-        _handTarget.rotation = _initHandRotation
-                                    * Quaternion.AngleAxis(handRotateAngle, Vector3.forward)
-                                    * Quaternion.AngleAxis(DEFAULT_HAND_ROTATION_ANGLE, Vector3.up)
-                                    * Quaternion.AngleAxis(facingAngle, Vector3.up);
-    }
-
-    private void OnDashStarted()
-    {
-        _handIKConstraint.weight = 0f;
-    }
-    
-    private void OnDashFinished()
-    {
-        _handIKConstraint.weight = 1f;
-    }
+    private Quaternion GetLeftFacingRotation() =>
+        Quaternion.Euler(0f, -SIDE_FACING_ANGLE - _defaultModelRotationAngle, 0f);
 
     private void Init()
     {
-        _modelRoot.localRotation = Quaternion.AngleAxis(DEFAULT_MODEL_ROTATION_ANGLE, Vector3.up);
-        _initHandRotation = _handTarget.localRotation;
+        _modelRoot.localRotation = GetRightFacingRotation();
     }
     
     private void CacheComponents()
