@@ -115,7 +115,7 @@ public class PlayerWeapon : MonoBehaviour
         
     }
 
-    // 총구 → 마우스 포인터 방향. 포인터가 총구와 너무 가깝거나 총구 뒤쪽이면 어깨 기준 조준 방향을 쓴다.
+    // 총구 → 마우스 포인터 방향(최대 상하 조준 각도로 제한). 포인터가 총구와 너무 가깝거나 총구 뒤쪽이면 어깨 기준 조준 방향을 쓴다.
     private Vector2 GetAimDirection(Vector3 origin)
     {
         Vector2 toPointer = _playerAim.AimPoint - (Vector2)origin;
@@ -123,7 +123,11 @@ public class PlayerWeapon : MonoBehaviour
         if (toPointer.sqrMagnitude < MIN_AIM_DISTANCE_SQR || Vector2.Dot(toPointer, _playerAim.AimDirection) <= 0f)
             return _playerAim.AimDirection;
 
-        return toPointer.normalized;
+        // 수직 조준 시 포인터가 총구보다 수평으로 뒤에 있으면 바라보는 쪽의 최대 각도로 쏜다(반대편으로 발사 방지)
+        if (toPointer.x * _playerAim.FacingDirection < 0f)
+            toPointer.x = 0f;
+
+        return _playerAim.ClampAimDirection(toPointer);
     }
 
     private void CacheComponents()
