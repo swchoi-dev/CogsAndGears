@@ -56,3 +56,17 @@
 - 상하 조준: 상체 회전 범위 `_bodyRotateRange`는 기존 값 25°(develop과 동일)이고, Pistol 자세의 척추가 측면 대비 약 40° 비틀려 있어 척추 X축 회전이 수직 피치로 약 77%만 반영된다. 조준 20°에서 총구 13°, 60°에서 약 18°로 상하 조준 시 총구와 조준 방향의 차이가 커진다. 발사 방향 로직은 요청대로 변경하지 않았다.
 - 실제 마우스 클릭 입력 주입으로는 발사가 트리거되지 않아 `OnFire`를 직접 호출해 확인했다.
 - 측면 자세의 시각적 판단, 기본 회전 각도 결정, 손 파지 육안 검수는 개발자 확인이 필요하다.
+
+## 추가 작업 1: Walk 애니메이션 및 관련 로직 제거
+- 출처: `c8a9fc3 feat: idle, walk, run, dash 애니메이션 연결`에서 Idle(0)→Walk(1)→Run(2)를 지나가도록 추가된 속도 램프
+- Animator: Blend Tree에서 WalkBackward(-1)·WalkForward(1) 제거, 임계값을 -1 Pistol Run Backward / 0 Pistol Idle / 1 Pistol Run으로 변경. Walk 전용 State·Transition·Parameter는 없었다(파라미터 `Speed` 유지, Dash 유지). `WalkForward.anim`·`WalkBackward.anim` 에셋은 삭제하지 않았다.
+- `PlayerMovement.cs`: `_runThreshold`, `_acceleration`, `_deceleration`, `_currentSpeed`와 램프 계산 제거. 바라보는 방향 기준 이동 방향(-1/0/1)을 그대로 `Speed`로 전달. 실제 이동 속도(`_moveSpeed`, `FixedUpdate`)는 변경 없음
+- `PlayerAnimHandler.cs`: 램프 제거로 Blend 전환이 튀지 않도록 `SetFloat` 감쇠(0.1초) 적용
+- 프리팹 재저장으로 제거된 필드의 직렬화 데이터 정리(씬 Override 없음)
+- 검증(Play Mode): 정지 → Pistol Idle, 바라보는 방향 이동 → Pistol Run(Speed 1), 반대 이동 → Pistol Run Backward(Speed -1), 좌우 모두 확인. Dash 후 복귀, Console 오류 0
+
+## 추가 작업 2: Pistol Run Backward 중 투사체 방향 오류 수정
+- 원인: 총이 손 자세를 따르므로 Pistol Run Backward에서 총구가 화면 안팎으로 기울어(`muzzle.right.z` 약 ±0.16~0.30) 투사체가 XY 플레이 평면을 벗어났다. `PlayerWeapon`은 총구 3D 방향 그대로 발사했다.
+- 수정(`PlayerWeapon.cs`): 총구 방향을 XY 평면에 투영하고 생성 위치 z를 플레이어 평면에 맞춘다(`DroneController.Fire`와 같은 방식). XY 각도는 기존대로 총구 방향을 따른다.
+- 검증(`OnFire` 직접 호출): 모든 상태에서 투사체 방향 z 0.00, 생성 위치 z 오차 0.000. Run Backward 오른쪽 (0.99, -0.17, 0.00), 왼쪽 (-0.99, -0.15, 0.00)
+- 남은 차이: Run Backward 손 자세로 총이 수평 조준 대비 약 8~10° 아래를 향해 투사체도 그 각도로 나간다.

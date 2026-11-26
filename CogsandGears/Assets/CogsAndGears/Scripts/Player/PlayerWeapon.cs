@@ -79,16 +79,25 @@ public class PlayerWeapon : MonoBehaviour
         // 무기별 랜덤 탄착각
         float spreadAngle = Random.Range(-data.SpreadAngle, data.SpreadAngle);
 
+        // 총은 애니메이션의 손 자세를 따르므로(예: Pistol Run Backward) 총구가 화면 안팎(z)으로 기울 수 있다.
+        // 총구 방향을 XY 플레이 평면에 투영하고 생성 위치도 플레이어 평면(z)에 맞춘다.
+        Vector3 muzzleDirection = _muzzlePoint.right;
+        muzzleDirection.z = 0f;
+        muzzleDirection.Normalize();
+
+        Vector3 origin = _muzzlePoint.position;
+        origin.z = transform.position.z;
+
         // 총구 방향에 탄착각 적용
         Vector3 fireDirection =
-            Quaternion.AngleAxis(spreadAngle, Vector3.forward) * _muzzlePoint.right;
+            Quaternion.AngleAxis(spreadAngle, Vector3.forward) * muzzleDirection;
 
         // 최종 투사체 회전
         Quaternion projectileRotation = Quaternion.LookRotation(fireDirection);
-        
+
         var projectile = Instantiate(
             data.ProjectilePrefab,
-            _muzzlePoint.position,
+            origin,
             projectileRotation
         );
         
